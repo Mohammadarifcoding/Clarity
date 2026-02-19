@@ -1,0 +1,204 @@
+"use client";
+
+import React, { useState } from "react";
+import { Mail, Lock, Chrome } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "@/src/lib/auth-client";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      await signIn.email(
+        {
+          email,
+          password,
+        },
+        {
+          onSuccess: () => {
+            router.push("/dashboard");
+          },
+          onError: (ctx) => {
+            setError(ctx.error.message || "Login failed");
+          },
+        },
+      );
+    } catch (err) {
+      setError("An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-white flex">
+      {/* Left Side - Form */}
+      <div className="flex-1 flex items-center justify-center px-6 lg:px-8">
+        <div className="w-full max-w-md">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2 mb-8">
+            <div className="w-10 h-10 bg-[var(--color-green)] rounded-lg flex items-center justify-center">
+              <div className="w-4 h-4 bg-white rounded-full"></div>
+            </div>
+            <span className="text-2xl font-light tracking-tight">Clarity</span>
+          </Link>
+
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-light tracking-tight mb-2">
+              Welcome{" "}
+              <span className="font-normal text-[var(--color-green)]">
+                back
+              </span>
+            </h1>
+            <p className="text-gray-600">Sign in to your account to continue</p>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+
+          {/* Email Login Form */}
+          <form onSubmit={handleEmailLogin} className="space-y-4">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Email address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="you@example.com"
+                  className="input pl-12"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="••••••••"
+                  className="input pl-12"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 text-[var(--color-green)] border-gray-300 rounded focus:ring-[var(--color-green)]"
+                />
+                <span className="ml-2 text-sm text-gray-600">Remember me</span>
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-sm text-[var(--color-green)] hover:text-[var(--color-green-dark)] transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
+
+          {/* Sign Up Link */}
+          <p className="mt-8 text-center text-sm text-gray-600">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/register"
+              className="font-medium text-[var(--color-green)] hover:text-[var(--color-green-dark)] transition-colors"
+            >
+              Sign up for free
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      {/* Right Side - Visual */}
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-[var(--color-charcoal)] to-[var(--color-charcoal-light)] relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-radial opacity-30"></div>
+        <div className="relative z-10 flex flex-col justify-center px-12 text-white">
+          <div className="mb-8">
+            <div className="w-16 h-16 bg-[var(--color-green)] rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-6 h-6 bg-white rounded-full"></div>
+            </div>
+            <h2 className="text-4xl font-light mb-4">
+              Your meetings,
+              <br />
+              <span className="font-normal text-[var(--color-green)]">
+                intelligently organized
+              </span>
+            </h2>
+            <p className="text-gray-300 text-lg leading-relaxed max-w-md">
+              Join thousands of teams using Clarity to transform their meetings
+              into actionable insights with AI-powered transcription and search.
+            </p>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-8 mt-12">
+            <div>
+              <div className="text-3xl font-light text-[var(--color-green)] mb-1">
+                50K+
+              </div>
+              <div className="text-sm text-gray-400">Active Users</div>
+            </div>
+            <div>
+              <div className="text-3xl font-light text-[var(--color-green)] mb-1">
+                1M+
+              </div>
+              <div className="text-sm text-gray-400">Meetings Recorded</div>
+            </div>
+            <div>
+              <div className="text-3xl font-light text-[var(--color-green)] mb-1">
+                99%
+              </div>
+              <div className="text-sm text-gray-400">Satisfaction</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
