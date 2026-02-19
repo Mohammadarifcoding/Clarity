@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 
 const Hero = () => {
   return (
@@ -8,7 +8,7 @@ const Hero = () => {
       <div className="container-custom relative grid lg:grid-cols-2 gap-16 items-center">
         {/* LEFT SIDE – Content */}
         <div className="max-w-xl">
-          <div className="badge mb-8 animate-fade-in">
+          <div className="badge mb-8 ">
             <div className="w-2 h-2 bg-(--color-green) rounded-full animate-pulse-glow"></div>
             <span>AI-Powered Meeting Intelligence</span>
           </div>
@@ -34,6 +34,7 @@ const Hero = () => {
             Trusted by 1,200+ teams worldwide
           </div>
         </div>
+        {/* <Lottie className="h-auto" animationData={meeting} loop={true} /> */}
       </div>
     </section>
   );
