@@ -2,7 +2,9 @@
 
 import React, { useState } from "react";
 import Sidebar from "@/src/components/layout/Sidebar";
+
 import { Meeting } from "@/src/types/meeting";
+import NewMeetingModal from "../../modal/NewMeetingModal";
 
 // Fake data for development
 const FAKE_MEETINGS: Meeting[] = [
@@ -61,10 +63,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     string | undefined
   >("2");
   const [isNewMeetingModalOpen, setIsNewMeetingModalOpen] = useState(false);
+  const [meetings, setMeetings] = useState<Meeting[]>(FAKE_MEETINGS);
 
   const handleNewMeeting = () => {
     setIsNewMeetingModalOpen(true);
-    console.log("Opening new meeting modal");
   };
 
   const handleSelectMeeting = (id: string) => {
@@ -73,15 +75,27 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const handleDeleteMeeting = (id: string) => {
-    console.log("Delete meeting:", id);
-    // TODO: Implement delete logic
+    setMeetings((prev) => prev.filter((m) => m.id !== id));
+    if (selectedMeetingId === id) {
+      setSelectedMeetingId(undefined);
+    }
+  };
+
+  const handleMeetingCreated = (newMeeting: Meeting) => {
+    setMeetings((prev) => [newMeeting, ...prev]);
+    setSelectedMeetingId(newMeeting.id);
+    console.log("New meeting created:", newMeeting);
+  };
+
+  const handleCloseModal = () => {
+    setIsNewMeetingModalOpen(false);
   };
 
   return (
-    <div className="flex h-screen  bg-[var(--color-gray-50)]">
+    <div className="flex h-screen bg-[var(--color-gray-50)]">
       {/* Sidebar */}
       <Sidebar
-        meetings={FAKE_MEETINGS}
+        meetings={meetings}
         selectedMeetingId={selectedMeetingId}
         onNewMeeting={handleNewMeeting}
         onSelectMeeting={handleSelectMeeting}
@@ -92,6 +106,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <main className="flex-1 overflow-y-auto">
         <div className="h-full">{children}</div>
       </main>
+
+      {/* New Meeting Modal */}
+      <NewMeetingModal
+        isOpen={isNewMeetingModalOpen}
+        onClose={handleCloseModal}
+        onMeetingCreated={handleMeetingCreated}
+      />
     </div>
   );
 }
