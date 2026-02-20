@@ -11,7 +11,8 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isAuthPage = pathname.includes("/auth");
+  const isAuthPage =
+    pathname.includes("/auth") || pathname.includes("/dashboard");
 
   return (
     <>

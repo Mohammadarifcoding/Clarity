@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, Lock, User, Chrome, EyeOff, Eye } from "lucide-react";
+import { Mail, Lock, EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 
 import { useRouter } from "next/navigation";
@@ -51,7 +51,7 @@ export default function RegisterForm() {
           },
         },
       );
-    } catch (err) {
+    } catch (err: unknown) {
       setError("An unexpected error occurred");
     } finally {
       setLoading(false);
@@ -64,9 +64,7 @@ export default function RegisterForm() {
         <div className="mb-8">
           <h1 className="text-4xl font-light tracking-tight mb-2">
             Create your{" "}
-            <span className="font-normal text-[var(--color-green)]">
-              account
-            </span>
+            <span className="font-normal text-(--color-green)">account</span>
           </h1>
         </div>
 
@@ -177,20 +175,20 @@ export default function RegisterForm() {
             <input
               type="checkbox"
               required
-              className="w-4 h-4 text-[var(--color-green)] border-gray-300 rounded focus:ring-[var(--color-green)] mt-1"
+              className="w-4 h-4 text-(--color-green) border-gray-300 rounded focus:ring-(--color-green) mt-1"
             />
             <label className="ml-2 text-sm text-gray-600">
               I agree to the{" "}
               <Link
                 href="/terms"
-                className="text-[var(--color-green)] hover:text-[var(--color-green-dark)]"
+                className="text-(--color-green) hover:text-(--color-green-dark)"
               >
                 Terms of Service
               </Link>{" "}
               and{" "}
               <Link
                 href="/privacy"
-                className="text-[var(--color-green)] hover:text-[var(--color-green-dark)]"
+                className="text-(--color-green) hover:text-(--color-green-dark)"
               >
                 Privacy Policy
               </Link>
@@ -210,7 +208,7 @@ export default function RegisterForm() {
           Already have an account?{" "}
           <Link
             href="/auth/login"
-            className="font-medium text-[var(--color-green)] hover:text-[var(--color-green-dark)] transition-colors"
+            className="font-medium text-(--color-green) hover:text-(--color-green-dark) transition-colors"
           >
             Sign in
           </Link>
