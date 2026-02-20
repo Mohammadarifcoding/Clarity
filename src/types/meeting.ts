@@ -9,4 +9,5 @@ export interface Meeting {
   aiSummary?: string;
   transcript?: string;
   participants?: number;
+  notes?: string;
 }

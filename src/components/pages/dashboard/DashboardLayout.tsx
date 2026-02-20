@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Sidebar from "@/src/components/layout/Sidebar";
 
 import { Meeting } from "@/src/types/meeting";
-import NewMeetingModal from "../../modal/NewMeetingModal";
+import MeetingModal from "../../meeting/MeetingModal";
 
 // Fake data for development
 const FAKE_MEETINGS: Meeting[] = [
@@ -65,7 +65,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isNewMeetingModalOpen, setIsNewMeetingModalOpen] = useState(false);
   const [meetings, setMeetings] = useState<Meeting[]>(FAKE_MEETINGS);
 
-  const handleNewMeeting = () => {
+  const handleNewMeeting = (): void => {
     setIsNewMeetingModalOpen(true);
   };
 
@@ -81,7 +81,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
   };
 
-  const handleMeetingCreated = (newMeeting: Meeting) => {
+  const handleMeetingCreated = (newMeeting: Meeting): void => {
     setMeetings((prev) => [newMeeting, ...prev]);
     setSelectedMeetingId(newMeeting.id);
     console.log("New meeting created:", newMeeting);
@@ -108,7 +108,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </main>
 
       {/* New Meeting Modal */}
-      <NewMeetingModal
+      <MeetingModal
         isOpen={isNewMeetingModalOpen}
         onClose={handleCloseModal}
         onMeetingCreated={handleMeetingCreated}

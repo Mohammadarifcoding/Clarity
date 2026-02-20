@@ -1,6 +1,4 @@
-import { useState, useCallback } from "react";
-import { useTimer } from "./useTimer";
-import { useMockTranscription } from "./useMockTranscription";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 export type RecordingState =
   | "idle"
@@ -9,62 +7,93 @@ export type RecordingState =
   | "processing"
   | "complete";
 
-export function useRecording(onMeetingCreated?: (meeting: any) => void) {
-  const [state, setState] = useState<RecordingState>("idle");
-  const [time, setTime] = useState(0);
-  const [transcripts, setTranscripts] = useState<string[]>([]);
+export default function useRecording() {
+  const [recordingState, setRecordingState] = useState<RecordingState>("idle");
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [liveTranscript, setLiveTranscript] = useState<string[]>([]);
+  const [title, setTitle] = useState("");
 
-  const addTranscript = useCallback((text: string) => {
-    setTranscripts((prev) => [...prev, text]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Timer
+  useEffect(() => {
+    if (recordingState === "recording") {
+      timerRef.current = setInterval(
+        () => setRecordingTime((t) => t + 1),
+        1000,
+      );
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [recordingState]);
+
+  useEffect(() => {
+    if (recordingState !== "recording") return;
+
+    const interval = setInterval(() => {
+      const mockTranscripts = [
+        "Let's start the meeting...",
+        "Focus on Q2 goals",
+        "Sarah, your thoughts?",
+        "Allocate project resources",
+        "Deadline is near",
+        "Sharing screen...",
+        "Can everyone see this?",
+        "Noting action items",
+        "Schedule follow-up",
+        "Any questions?",
+      ];
+      setLiveTranscript((prev) => [
+        ...prev,
+        mockTranscripts[Math.floor(Math.random() * mockTranscripts.length)],
+      ]);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [recordingState]);
+
+  const start = useCallback((meetingTitle?: string) => {
+    setTitle(meetingTitle || `Meeting - ${new Date().toLocaleString()}`);
+    setRecordingTime(0);
+    setLiveTranscript([]);
+    setRecordingState("recording");
   }, []);
 
-  useTimer(state === "recording", () => {
-    setTime((prev) => prev + 1);
-  });
+  const pauseResume = useCallback(() => {
+    setRecordingState((prev) =>
+      prev === "recording" ? "paused" : "recording",
+    );
+  }, []);
 
-  useMockTranscription(state === "recording", addTranscript);
+  const stop = useCallback(() => setRecordingState("processing"), []);
 
-  const start = () => {
-    setTime(0);
-    setTranscripts([]);
-    setState("recording");
-  };
+  const complete = useCallback(() => setRecordingState("complete"), []);
 
-  const pause = () => {
-    setState((prev) => (prev === "recording" ? "paused" : "recording"));
-  };
-
-  const stop = () => {
-    setState("processing");
-
-    setTimeout(() => {
-      setState("complete");
-
-      const meeting = {
-        id: Date.now().toString(),
-        duration: Math.floor(time / 60),
-        transcript: transcripts.join("\n"),
-      };
-
-      setTimeout(() => {
-        onMeetingCreated?.(meeting);
-      }, 1500);
-    }, 2000);
-  };
-
-  const reset = () => {
-    setState("idle");
-    setTime(0);
-    setTranscripts([]);
-  };
+  const reset = useCallback(() => {
+    setRecordingState("idle");
+    setRecordingTime(0);
+    setLiveTranscript([]);
+    setTitle("");
+  }, []);
 
   return {
-    state,
-    time,
-    transcripts,
+    recordingState,
+    recordingTime,
+    liveTranscript,
+    title,
     start,
-    pause,
+    pauseResume,
     stop,
+    complete,
     reset,
+    setTitle,
   };
 }
