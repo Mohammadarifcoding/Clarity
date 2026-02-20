@@ -19,7 +19,7 @@ export default function Register() {
             <h2 className="text-4xl font-light mb-4">
               Start your journey with
               <br />
-              <span className="font-normal text-[var(--color-green)]">
+              <span className="font-normal text-(--color-green)">
                 Clarity today
               </span>
             </h2>
@@ -32,8 +32,8 @@ export default function Register() {
           {/* Features */}
           <div className="space-y-4 mt-12">
             <div className="flex items-start space-x-3">
-              <div className="w-6 h-6 bg-[var(--color-green)]/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <div className="w-2 h-2 bg-[var(--color-green)] rounded-full"></div>
+              <div className="w-6 h-6 bg-(--color-green)/20 rounded-full flex items-center justify-center shrink-0 mt-1">
+                <div className="w-2 h-2 bg-(--color-green) rounded-full"></div>
               </div>
               <div>
                 <p className="font-medium mb-1">Instant Transcription</p>
@@ -43,8 +43,8 @@ export default function Register() {
               </div>
             </div>
             <div className="flex items-start space-x-3">
-              <div className="w-6 h-6 bg-[var(--color-green)]/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <div className="w-2 h-2 bg-[var(--color-green)] rounded-full"></div>
+              <div className="w-6 h-6 bg-(--color-green)/20 rounded-full flex items-center justify-center shrink-0 mt-1">
+                <div className="w-2 h-2 bg-(--color-green) rounded-full"></div>
               </div>
               <div>
                 <p className="font-medium mb-1">Smart Q&A</p>
@@ -54,8 +54,8 @@ export default function Register() {
               </div>
             </div>
             <div className="flex items-start space-x-3">
-              <div className="w-6 h-6 bg-[var(--color-green)]/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <div className="w-2 h-2 bg-[var(--color-green)] rounded-full"></div>
+              <div className="w-6 h-6 bg-(--color-green)/20 rounded-full flex items-center justify-center shrink-0 mt-1">
+                <div className="w-2 h-2 bg-(--color-green) rounded-full"></div>
               </div>
               <div>
                 <p className="font-medium mb-1">Secure & Private</p>

@@ -7,7 +7,7 @@ interface Props {
 
 export default function MeetingHeader({ status, onClose }: Props) {
   return (
-    <div className="flex items-center justify-between p-6 border-b border-gray-200 flex-shrink-0">
+    <div className="flex items-center justify-between p-6 border-b border-gray-200 shrink-0">
       <h2 className="text-2xl font-light">
         {status === "idle"
           ? "Start New Meeting"
@@ -17,7 +17,7 @@ export default function MeetingHeader({ status, onClose }: Props) {
       </h2>
       <button
         onClick={onClose}
-        className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+        className="p-2 hover:bg-gray-100 rounded-lg transition-colors shrink-0"
       >
         <X className="w-5 h-5 text-gray-500" />
       </button>

@@ -51,8 +51,8 @@ export default function MeetingItem({
         onClick={handleSelect}
         aria-selected={isSelected}
         className={`w-full text-left px-3 py-3 rounded-xl transition-all relative
-          focus:outline-none focus:ring-2 focus:ring-[var(--color-green)]/40
-          ${isSelected ? "bg-[var(--color-green)]/10" : "hover:bg-gray-50"}`}
+          focus:outline-none focus:ring-2 focus:ring-(--color-green)/40
+          ${isSelected ? "bg-(--color-green)/10" : "hover:bg-gray-50"}`}
       >
         {meeting.hasUnreadInsights && (
           <span className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full" />
@@ -68,14 +68,14 @@ export default function MeetingItem({
 
               <span
                 className={`text-sm font-medium truncate ${
-                  isSelected ? "text-[var(--color-green)]" : "text-gray-800"
+                  isSelected ? "text-(--color-green)" : "text-gray-800"
                 }`}
               >
                 {meeting.title}
               </span>
 
               {meeting.hasTranscript && meeting.status === "complete" && (
-                <Check className="w-3 h-3 text-green-500 flex-shrink-0" />
+                <Check className="w-3 h-3 text-green-500 shrink-0" />
               )}
             </div>
 
@@ -106,7 +106,7 @@ export default function MeetingItem({
             {/* AI Summary */}
             {meeting.aiSummary && meeting.status === "complete" && (
               <p className="text-xs text-gray-400 line-clamp-1 flex items-start gap-1">
-                <span className="flex-shrink-0">💡</span>
+                <span className="shrink-0">💡</span>
                 <span className="truncate">{meeting.aiSummary}</span>
               </p>
             )}
@@ -127,7 +127,7 @@ export default function MeetingItem({
               e.stopPropagation();
               setIsMenuOpen((prev) => !prev);
             }}
-            className="p-1.5 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-green)]/40"
+            className="p-1.5 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-(--color-green)/40"
           >
             <MoreVertical className="w-4 h-4 text-gray-500" />
           </button>

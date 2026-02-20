@@ -17,7 +17,7 @@ const MeetingFooter = ({
   onStop,
 }: MeetingFooterProps) => {
   return (
-    <div className="p-6 border-t border-gray-200 flex-shrink-0">
+    <div className="p-6 border-t border-gray-200 shrink-0">
       {status === "idle" ? (
         <div className="flex gap-3">
           <button
@@ -52,7 +52,7 @@ const MeetingFooter = ({
             </button>
             <button
               onClick={onStop}
-              className="flex-1 px-6 py-3 bg-[var(--color-charcoal)] text-white rounded-xl font-medium hover:bg-[var(--color-green)] transition-colors flex items-center justify-center gap-2"
+              className="flex-1 px-6 py-3 bg-(--color-charcoal) text-white rounded-xl font-medium hover:bg-(--color-green) transition-colors flex items-center justify-center gap-2"
             >
               <Square className="w-5 h-5" /> Stop & Save
             </button>

@@ -45,7 +45,7 @@ export default function LoginForm() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2 mb-8">
-          <div className="w-10 h-10 bg-[var(--color-green)] rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-(--color-green) rounded-lg flex items-center justify-center">
             <div className="w-4 h-4 bg-white rounded-full"></div>
           </div>
           <span className="text-2xl font-light tracking-tight">Clarity</span>
@@ -55,7 +55,7 @@ export default function LoginForm() {
         <div className="mb-8">
           <h1 className="text-4xl font-light tracking-tight mb-2">
             Welcome{" "}
-            <span className="font-normal text-[var(--color-green)]">back</span>
+            <span className="font-normal text-(--color-green)">back</span>
           </h1>
           <p className="text-gray-600">Sign in to your account to continue</p>
         </div>
@@ -117,13 +117,13 @@ export default function LoginForm() {
             <label className="flex items-center">
               <input
                 type="checkbox"
-                className="w-4 h-4 text-[var(--color-green)] border-gray-300 rounded focus:ring-[var(--color-green)]"
+                className="w-4 h-4 text-(--color-green) border-gray-300 rounded focus:ring-(--color-green)"
               />
               <span className="ml-2 text-sm text-gray-600">Remember me</span>
             </label>
             <Link
               href="/forgot-password"
-              className="text-sm text-[var(--color-green)] hover:text-[var(--color-green-dark)] transition-colors"
+              className="text-sm text-(--color-green) hover:text-[var(--color-green-dark)] transition-colors"
             >
               Forgot password?
             </Link>
@@ -143,7 +143,7 @@ export default function LoginForm() {
           Don&apos;t have an account?{" "}
           <Link
             href="/auth/register"
-            className="font-medium text-[var(--color-green)] hover:text-[var(--color-green-dark)] transition-colors"
+            className="font-medium text-(--color-green) hover:text-[var(--color-green-dark)] transition-colors"
           >
             Sign up for free
           </Link>

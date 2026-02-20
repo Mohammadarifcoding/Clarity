@@ -14,7 +14,7 @@ export const StatusView = ({
   <div className="text-center py-12">
     {recordingState === "processing" ? (
       <>
-        <Loader2 className="w-16 h-16 text-[var(--color-green)] animate-spin mx-auto mb-4" />
+        <Loader2 className="w-16 h-16 text-(--color-green) animate-spin mx-auto mb-4" />
         <h3 className="text-xl font-medium text-gray-800 mb-2">
           Processing Recording
         </h3>

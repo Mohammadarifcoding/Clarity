@@ -25,7 +25,7 @@ export const MeetingForm = ({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="e.g., Team Standup - Feb 20"
-        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-green)] focus:border-transparent outline-none transition"
+        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-(--color-green) focus:border-transparent outline-none transition"
       />
     </div>
 
@@ -42,7 +42,7 @@ export const MeetingForm = ({
         onChange={(e) => setNotes(e.target.value)}
         placeholder="Add any notes or context about this meeting..."
         rows={4}
-        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[var(--color-green)] focus:border-transparent outline-none transition resize-none"
+        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-(--color-green) focus:border-transparent outline-none transition resize-none"
       />
     </div>
 

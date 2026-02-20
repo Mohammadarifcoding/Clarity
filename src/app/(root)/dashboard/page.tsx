@@ -8,14 +8,14 @@ export default function DashboardPage() {
     <div className="h-full flex items-center justify-center p-8">
       <div className="max-w-2xl w-full text-center">
         {/* Icon */}
-        <div className="w-20 h-20 bg-[var(--color-green)]/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <MessageSquare className="w-10 h-10 text-[var(--color-green)]" />
+        <div className="w-20 h-20 bg-(--color-green)/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <MessageSquare className="w-10 h-10 text-(--color-green)" />
         </div>
 
         {/* Heading */}
         <h1 className="text-4xl font-light tracking-tight mb-4">
           Select a meeting to{" "}
-          <span className="font-normal text-[var(--color-green)]">
+          <span className="font-normal text-(--color-green)">
             start chatting
           </span>
         </h1>

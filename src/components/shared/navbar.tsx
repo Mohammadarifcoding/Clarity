@@ -36,7 +36,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Brand */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-[var(--color-green)] rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-(--color-green) rounded-lg flex items-center justify-center">
               <div className="w-3 h-3 bg-white rounded-full"></div>
             </div>
             <span className="text-2xl font-light tracking-tight">Clarity</span>
@@ -59,7 +59,7 @@ const Navbar = () => {
 
               {!isPending && !session && (
                 <Link href="/auth/login">
-                  <button className="px-6 py-2 bg-[var(--color-charcoal)] text-white rounded-lg text-sm font-medium hover:bg-[var(--color-green)] transition-all duration-300 hover:scale-105">
+                  <button className="px-6 py-2 bg-(--color-charcoal) text-white rounded-lg text-sm font-medium hover:bg-(--color-green) transition-all duration-300 hover:scale-105">
                     Login
                   </button>
                 </Link>
@@ -75,11 +75,11 @@ const Navbar = () => {
                       <img
                         src={session.user.image}
                         alt={session.user.name || "User"}
-                        className="w-9 h-9 rounded-full object-cover border-2 border-gray-200 hover:border-[var(--color-green)] transition-colors"
+                        className="w-9 h-9 rounded-full object-cover border-2 border-gray-200 hover:border-(--color-green) transition-colors"
                       />
                     ) : (
-                      <div className="w-9 h-9 rounded-full bg-[var(--color-green)]/10 flex items-center justify-center border-2 border-gray-200 hover:border-[var(--color-green)] transition-colors">
-                        <UserCircle className="w-6 h-6 text-[var(--color-green)]" />
+                      <div className="w-9 h-9 rounded-full bg-(--color-green)/10 flex items-center justify-center border-2 border-gray-200 hover:border-(--color-green) transition-colors">
+                        <UserCircle className="w-6 h-6 text-(--color-green)" />
                       </div>
                     )}
                     <ChevronDown
