@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useCallback } from "react";
-import {
-  Circle,
-  Clock,
-  MoreVertical,
-  Trash2,
-  Check,
-  Loader2,
-} from "lucide-react";
+import { Circle, Clock, MoreVertical, Trash2, Loader2 } from "lucide-react";
 
 import { formatTimeAgo, formatDuration } from "@/src/utils/meetingDate";
 import { useOutsideClick } from "@/src/hooks/useOutsideClick";

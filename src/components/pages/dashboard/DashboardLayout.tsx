@@ -6,6 +6,7 @@ import Sidebar from "@/src/components/layout/Sidebar";
 import MeetingModal from "../../meeting/MeetingModal";
 import FAKE_MEETINGS from "@/src/data/meeting";
 import { Meeting } from "@prisma/client";
+import { useMeetings } from "@/src/hooks/useMeetingList";
 
 // Fake data for development
 
@@ -18,7 +19,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     string | undefined
   >("2");
   const [isNewMeetingModalOpen, setIsNewMeetingModalOpen] = useState(false);
-  const [meetings, setMeetings] = useState<Meeting[]>(FAKE_MEETINGS);
+  // const [meetings, setMeetings] = useState<Meeting[]>(FAKE_MEETINGS);
+  const { meetings, loading, error, refetch } = useMeetings();
 
   const handleNewMeeting = (): void => {
     setIsNewMeetingModalOpen(true);
@@ -30,14 +32,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const handleDeleteMeeting = (id: string) => {
-    setMeetings((prev) => prev.filter((m) => m.id !== id));
-    if (selectedMeetingId === id) {
-      setSelectedMeetingId(undefined);
-    }
+    // setMeetings((prev) => prev.filter((m) => m.id !== id));
+    // if (selectedMeetingId === id) {
+    //   setSelectedMeetingId(undefined);
+    // }
+    refetch();
   };
 
   const handleMeetingCreated = (newMeeting: Meeting): void => {
-    setMeetings((prev) => [newMeeting, ...prev]);
+    // setMeetings((prev) => [newMeeting, ...prev]);
+    refetch();
     setSelectedMeetingId(newMeeting.id);
     console.log("New meeting created:", newMeeting);
   };
@@ -47,9 +51,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   return (
-    <div className="flex h-screen bg-[var(--color-gray-50)]">
+    <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <Sidebar
+        isLoading={loading}
         meetings={meetings}
         selectedMeetingId={selectedMeetingId}
         onNewMeeting={handleNewMeeting}

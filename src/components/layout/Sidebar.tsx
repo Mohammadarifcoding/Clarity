@@ -19,7 +19,7 @@ interface SidebarProps {
 
 export default function Sidebar({
   meetings,
-  isLoading = false,
+  isLoading = true,
   selectedMeetingId,
   onNewMeeting,
   onSelectMeeting,

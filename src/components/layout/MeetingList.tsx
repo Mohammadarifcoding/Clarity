@@ -15,7 +15,7 @@ interface MeetingListProps {
 }
 
 export default function MeetingList({
-  isLoading = false,
+  isLoading = true,
   filteredMeetings,
   groupedMeetings,
   selectedMeetingId,
@@ -26,7 +26,7 @@ export default function MeetingList({
     return <SidebarSkeleton />;
   }
 
-  if (filteredMeetings.length === 0) {
+  if (!isLoading && filteredMeetings.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-sm text-gray-500 mb-2">No meetings found</p>
