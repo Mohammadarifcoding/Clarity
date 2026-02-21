@@ -12,6 +12,7 @@ import {
   completeMeeting,
   createMeeting,
 } from "@/src/server/modules/meeting/meeting.action";
+import { saveTranscript } from "@/src/server/modules/transcription/transcription.action";
 import toast from "react-hot-toast";
 import { Meeting } from "@prisma/client";
 
@@ -30,6 +31,8 @@ export default function MeetingModal({
     recordingState,
     recordingTime,
     liveTranscript,
+    transcriptSegments,
+    fullTranscript,
     title,
     setTitle,
     startRecording,
@@ -44,7 +47,7 @@ export default function MeetingModal({
 
   // Stop & complete meeting
   const handleStopRecording = async () => {
-    stopRecording(); // stop audio + timer
+    stopRecording();
     try {
       if (!meetingId) throw new Error("No meeting ID found");
 
@@ -58,7 +61,28 @@ export default function MeetingModal({
       if (!action.success || !action.data)
         throw new Error("Failed to complete meeting: " + action.error);
 
-      complete(); // set state -> complete
+      const transcriptText = fullTranscript || liveTranscript.join(" ");
+      if (transcriptText.trim()) {
+        const transcriptResult = await saveTranscript({
+          meetingId,
+          fullText: transcriptText.trim(),
+          segments: transcriptSegments.map((seg, index) => ({
+            text: seg.text,
+            startTime: seg.startTime,
+            endTime: seg.endTime,
+            sequenceNumber: index,
+          })),
+          wordCount: transcriptText.split(/\s+/).length,
+          language: "en",
+        });
+
+        if (!transcriptResult.success) {
+          console.error("Failed to save transcript:", transcriptResult.error);
+          toast.error("Meeting saved but transcript failed to save");
+        }
+      }
+
+      complete();
 
       const newMeeting: Meeting = {
         id: meetingId,
@@ -74,13 +98,13 @@ export default function MeetingModal({
       };
 
       onMeetingCreated?.(newMeeting);
+      toast.success("Meeting completed and transcript saved!");
     } catch (err) {
       toast.error("Failed to complete meeting: " + err);
     }
     handleClose();
   };
 
-  // Close modal safely
   const handleClose = () => {
     if (
       (recordingState === "RECORDING" || recordingState === "paused") &&
@@ -92,7 +116,6 @@ export default function MeetingModal({
     onClose();
   };
 
-  // Start meeting: create backend meeting + start recording
   const startMeeting = async () => {
     const data = {
       title: title || `Meeting - ${new Date().toLocaleString()}`,
@@ -101,7 +124,7 @@ export default function MeetingModal({
     try {
       const action = await createMeeting(data);
       if (action.success && action.data) {
-        await startRecording(title, action.data.id); // mic + timer + transcript
+        await startRecording(title, action.data.id);
       } else {
         toast.error("Failed to create meeting: " + action.error);
       }

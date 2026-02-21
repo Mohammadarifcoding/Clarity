@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Sidebar from "@/src/components/layout/Sidebar";
 
 import MeetingModal from "../../meeting/MeetingModal";
-import FAKE_MEETINGS from "@/src/data/meeting";
 import { Meeting } from "@prisma/client";
 import { useMeetings } from "@/src/hooks/useMeetingList";
 import { deleteMeeting } from "@/src/server/modules/meeting/meeting.action";

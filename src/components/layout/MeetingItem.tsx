@@ -6,7 +6,6 @@ import { Circle, Clock, MoreVertical, Trash2, Loader2 } from "lucide-react";
 import { formatTimeAgo, formatDuration } from "@/src/utils/meetingDate";
 import { useOutsideClick } from "@/src/hooks/useOutsideClick";
 import { Meeting } from "@prisma/client";
-import { deleteMeeting } from "@/src/server/modules/meeting/meeting.action";
 
 interface MeetingItemProps {
   meeting: Meeting;
