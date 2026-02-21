@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 
 interface StatusViewProps {
-  recordingState: "processing" | "complete";
+  recordingState: "PROCESSING" | "COMPLETE";
   recordingTime: number;
   formatTime: (s: number) => string;
 }
@@ -12,7 +12,7 @@ export const StatusView = ({
   formatTime,
 }: StatusViewProps) => (
   <div className="text-center py-12">
-    {recordingState === "processing" ? (
+    {recordingState === "PROCESSING" ? (
       <>
         <Loader2 className="w-16 h-16 text-(--color-green) animate-spin mx-auto mb-4" />
         <h3 className="text-xl font-medium text-gray-800 mb-2">

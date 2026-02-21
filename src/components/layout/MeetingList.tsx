@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { Meeting } from "@/src/types/meeting";
 import MeetingItem from "./MeetingItem";
 import SidebarSkeleton from "./SidebarSkeleton";
+import { Meeting } from "@prisma/client";
 
 interface MeetingListProps {
   isLoading?: boolean;

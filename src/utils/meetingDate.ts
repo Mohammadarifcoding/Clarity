@@ -10,7 +10,7 @@ export const categorizeMeeting = (dateString: string) => {
   return "older";
 };
 
-export const formatTimeAgo = (dateString: string) => {
+export const formatTimeAgo = (dateString: Date) => {
   const date = new Date(dateString);
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
 

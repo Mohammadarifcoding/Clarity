@@ -1,4 +1,5 @@
-import { Meeting } from "@/src/types/meeting";
+
+import { Meeting } from "@prisma/client";
 import MeetingItem from "./MeetingItem";
 
 const CategorySection = ({

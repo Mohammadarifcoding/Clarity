@@ -1,11 +1,66 @@
-import { Meeting } from "../types/meeting";
+import { Meeting } from "@prisma/client";
 
-export const mockMeetings: Meeting[] = [
+const FAKE_MEETINGS: Meeting[] = [
   {
     id: "1",
     title: "Team Standup",
-    date: new Date().toISOString(),
-    duration: 15,
-    status: "complete",
+    createdAt: new Date(Date.now() - 15 * 60 * 1000), // 15 mins ago
+    startedAt: new Date(Date.now() - 15 * 60 * 1000),
+    audioDuration: 15,
+    status: "RECORDING",
+    userId: "4324",
+    note: "Daily sync-up to discuss progress and blockers.",
+    endedAt: new Date(Date.now() - 15 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 15 * 60 * 1000),
+  },
+  {
+    id: "2",
+    title: "Marketing Strategy Discussion",
+    audioDuration: 45,
+    status: "COMPLETE",
+    userId: "4324",
+    note: "Daily sync-up to discuss progress and blockers.",
+    endedAt: new Date(Date.now() - 15 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 15 * 60 * 1000),
+    startedAt: new Date(Date.now() - 15 * 60 * 1000),
+    createdAt: new Date(Date.now() - 15 * 60 * 1000),
+  },
+  {
+    id: "3",
+    title: "Client Call - Acme Corp",
+    audioDuration: 83,
+    status: "COMPLETE",
+    note: "Daily sync-up to discuss progress and blockers.",
+    endedAt: new Date(Date.now() - 15 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 15 * 60 * 1000),
+    startedAt: new Date(Date.now() - 15 * 60 * 1000),
+    createdAt: new Date(Date.now() - 15 * 60 * 1000),
+    userId: "4324",
+  },
+  {
+    id: "4",
+    title: "Product Roadmap Planning",
+    audioDuration: 62,
+    status: "COMPLETE",
+    note: "Daily sync-up to discuss progress and blockers.",
+    endedAt: new Date(Date.now() - 15 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 15 * 60 * 1000),
+    startedAt: new Date(Date.now() - 15 * 60 * 1000),
+    createdAt: new Date(Date.now() - 15 * 60 * 1000),
+    userId: "4324",
+  },
+  {
+    id: "5",
+    title: "Design Review Session",
+    audioDuration: 38,
+    status: "COMPLETE",
+    note: "Daily sync-up to discuss progress and blockers.",
+    endedAt: new Date(Date.now() - 15 * 60 * 1000),
+    updatedAt: new Date(Date.now() - 15 * 60 * 1000),
+    startedAt: new Date(Date.now() - 15 * 60 * 1000),
+    createdAt: new Date(Date.now() - 15 * 60 * 1000),
+    userId: "4324",
   },
 ];
+
+export default FAKE_MEETINGS;

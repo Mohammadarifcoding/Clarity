@@ -2,7 +2,7 @@ import { Mic, Pause, Play, Square } from "lucide-react";
 import React from "react";
 
 interface MeetingFooterProps {
-  status: "idle" | "recording" | "paused" | "processing" | "complete";
+  status: "idle" | "RECORDING" | "paused" | "PROCESSING" | "COMPLETE";
   onClose: () => void;
   onStart: () => void;
   onPauseResume: () => void;
@@ -34,13 +34,13 @@ const MeetingFooter = ({
           </button>
         </div>
       ) : (
-        (status === "recording" || status === "paused") && (
+        (status === "RECORDING" || status === "paused") && (
           <div className="flex gap-3">
             <button
               onClick={onPauseResume}
               className="flex-1 px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
             >
-              {status === "recording" ? (
+              {status === "RECORDING" ? (
                 <>
                   <Pause className="w-5 h-5" /> Pause
                 </>

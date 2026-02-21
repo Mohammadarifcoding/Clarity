@@ -9,9 +9,10 @@ import {
   Check,
   Loader2,
 } from "lucide-react";
-import { Meeting } from "@/src/types/meeting";
+
 import { formatTimeAgo, formatDuration } from "@/src/utils/meetingDate";
 import { useOutsideClick } from "@/src/hooks/useOutsideClick";
+import { Meeting } from "@prisma/client";
 
 interface MeetingItemProps {
   meeting: Meeting;
@@ -54,15 +55,15 @@ export default function MeetingItem({
           focus:outline-none focus:ring-2 focus:ring-(--color-green)/40
           ${isSelected ? "bg-(--color-green)/10" : "hover:bg-gray-50"}`}
       >
-        {meeting.hasUnreadInsights && (
+        {/* {meeting.hasUnreadInsights && (
           <span className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full" />
-        )}
+        )} */}
 
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0 pr-2">
             {/* Title Row */}
             <div className="flex items-center gap-2 mb-1">
-              {meeting.status === "recording" && (
+              {meeting.status === "RECORDING" && (
                 <Circle className="w-2 h-2 text-red-500 fill-red-500 animate-pulse" />
               )}
 
@@ -74,48 +75,40 @@ export default function MeetingItem({
                 {meeting.title}
               </span>
 
-              {meeting.hasTranscript && meeting.status === "complete" && (
+              {/* {meeting.hasTranscript && meeting.status === "COMPLETE" && (
                 <Check className="w-3 h-3 text-green-500 shrink-0" />
-              )}
+              )} */}
             </div>
 
             {/* Meta Row */}
             <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-              <span>{formatTimeAgo(meeting.date)}</span>
+              <span>{formatTimeAgo(meeting.createdAt)}</span>
 
-              {meeting.status === "complete" && (
+              {meeting.status === "COMPLETE" && (
                 <>
                   <span>•</span>
                   <Clock className="w-3 h-3" />
-                  <span>{formatDuration(meeting.duration)}</span>
+                  <span>{formatDuration(meeting.audioDuration as number)}</span>
                 </>
               )}
 
-              {meeting.status === "recording" && (
+              {meeting.status === "RECORDING" && (
                 <span className="text-red-500 font-medium">Recording…</span>
               )}
 
-              {meeting.status === "processing" && (
+              {meeting.status === "PROCESSING" && (
                 <span className="text-blue-500 font-medium flex items-center gap-1">
                   <Loader2 className="w-3 h-3 animate-spin" />
                   Processing...
                 </span>
               )}
             </div>
-
-            {/* AI Summary */}
-            {meeting.aiSummary && meeting.status === "complete" && (
-              <p className="text-xs text-gray-400 line-clamp-1 flex items-start gap-1">
-                <span className="shrink-0">💡</span>
-                <span className="truncate">{meeting.aiSummary}</span>
-              </p>
-            )}
           </div>
         </div>
       </button>
 
       {/* Dropdown */}
-      {meeting.status !== "recording" && (
+      {meeting.status !== "RECORDING" && (
         <div
           ref={menuRef}
           className="absolute right-2 top-3 opacity-0 group-hover:opacity-100 transition"

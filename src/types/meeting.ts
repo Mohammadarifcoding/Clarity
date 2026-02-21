@@ -3,7 +3,7 @@ export interface Meeting {
   title: string;
   date: string; // ISO string
   duration: number; // in minutes
-  status: "recording" | "processing" | "complete" | "failed";
+  status: "RECORDING" | "PROCESSING" | "COMPLETE" | "failed";
   hasTranscript?: boolean;
   hasUnreadInsights?: boolean;
   aiSummary?: string;

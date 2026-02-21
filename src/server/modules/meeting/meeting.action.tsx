@@ -7,9 +7,10 @@ import {
   CreateMeetingInput,
   createMeetingSchema,
 } from "./meeting.types";
-import validateUser from "@/src/lib/getCurrentUser";
+
 import { prisma } from "@/src/lib/db";
 import { Meeting } from "@prisma/client";
+import getCurrentUser from "@/src/lib/getCurrentUser";
 
 type ResponseType<T> = {
   success: boolean;
@@ -21,7 +22,7 @@ const createMeeting = async (
   body: CreateMeetingInput,
 ): Promise<ResponseType<Meeting>> => {
   try {
-    const user = await validateUser();
+    const user = await getCurrentUser();
     const result = await safeValidateInput(createMeetingSchema, body);
 
     if (!result.success) {
@@ -50,7 +51,7 @@ const completeMeeting = async (
   body: CompleteMeetingInput,
 ): Promise<ResponseType<Meeting>> => {
   try {
-    const user = await validateUser();
+    const user = await getCurrentUser();
     const result = await safeValidateInput(completeMeetingSchema, body);
 
     if (!result.success) {
@@ -87,4 +88,21 @@ const completeMeeting = async (
   }
 };
 
-export { createMeeting, completeMeeting };
+const listMeetings = async () => {
+  try {
+    const user = await getCurrentUser();
+    const meetings = await prisma.meeting.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
+    });
+    return { success: true, data: meetings, error: null };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: error instanceof Error ? error : new Error(String(error)),
+    };
+  }
+};
+
+export { createMeeting, completeMeeting, listMeetings };

@@ -2,10 +2,10 @@ import { useState, useRef, useEffect, useCallback } from "react";
 
 export type RecordingState =
   | "idle"
-  | "recording"
+  | "RECORDING"
   | "paused"
-  | "processing"
-  | "complete";
+  | "PROCESSING"
+  | "COMPLETE";
 
 export default function useRecording() {
   const [recordingState, setRecordingState] = useState<RecordingState>("idle");
@@ -23,7 +23,7 @@ export default function useRecording() {
 
   // Timer
   useEffect(() => {
-    if (recordingState === "recording") {
+    if (recordingState === "RECORDING") {
       timerRef.current = setInterval(
         () => setRecordingTime((t) => t + 1),
         1000,
@@ -39,7 +39,7 @@ export default function useRecording() {
 
   // Mock transcript (replace with real API streaming)
   useEffect(() => {
-    if (recordingState !== "recording") return;
+    if (recordingState !== "RECORDING") return;
 
     const interval = setInterval(() => {
       const mockTranscripts = [
@@ -82,7 +82,7 @@ export default function useRecording() {
         };
 
         recorder.start(1000); // emit every second
-        setRecordingState("recording");
+        setRecordingState("RECORDING");
       } catch (err) {
         console.error("Microphone access denied or error:", err);
       }
@@ -93,12 +93,12 @@ export default function useRecording() {
   // Pause/resume
   const pauseResumeAudio = useCallback(() => {
     if (!mediaRecorder) return;
-    if (recordingState === "recording") {
+    if (recordingState === "RECORDING") {
       mediaRecorder.pause();
       setRecordingState("paused");
     } else if (recordingState === "paused") {
       mediaRecorder.resume();
-      setRecordingState("recording");
+      setRecordingState("RECORDING");
     }
   }, [mediaRecorder, recordingState]);
 
@@ -108,11 +108,11 @@ export default function useRecording() {
       mediaRecorder.stop();
       mediaRecorder.stream.getTracks().forEach((track) => track.stop());
     }
-    setRecordingState("processing");
+    setRecordingState("PROCESSING");
   }, [mediaRecorder]);
 
   // Complete
-  const complete = useCallback(() => setRecordingState("complete"), []);
+  const complete = useCallback(() => setRecordingState("COMPLETE"), []);
 
   // Reset
   const reset = useCallback(() => {

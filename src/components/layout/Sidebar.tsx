@@ -2,11 +2,11 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Meeting } from "@/src/types/meeting";
 import SidebarHeader from "./SidebarHeader";
 import MeetingList from "./MeetingList";
 import { useOutsideClick } from "@/src/hooks/useOutsideClick";
 import { useMeetingFilter } from "@/src/hooks/useMeetingFilter";
+import { Meeting } from "@prisma/client";
 
 interface SidebarProps {
   meetings: Meeting[];

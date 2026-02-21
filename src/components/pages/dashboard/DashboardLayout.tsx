@@ -3,56 +3,11 @@
 import React, { useState } from "react";
 import Sidebar from "@/src/components/layout/Sidebar";
 
-import { Meeting } from "@/src/types/meeting";
 import MeetingModal from "../../meeting/MeetingModal";
+import FAKE_MEETINGS from "@/src/data/meeting";
+import { Meeting } from "@prisma/client";
 
 // Fake data for development
-const FAKE_MEETINGS: Meeting[] = [
-  {
-    id: "1",
-    title: "Team Standup",
-    date: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-    duration: 15,
-    status: "recording",
-    hasTranscript: false,
-  },
-  {
-    id: "2",
-    title: "Marketing Strategy Discussion",
-    date: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    duration: 45,
-    status: "complete",
-    hasTranscript: true,
-    aiSummary: "3 action items • Budget allocation • Q2 planning",
-  },
-  {
-    id: "3",
-    title: "Client Call - Acme Corp",
-    date: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-    duration: 83,
-    status: "complete",
-    hasTranscript: true,
-    aiSummary: "Contract terms • Next steps defined • Follow-up needed",
-  },
-  {
-    id: "4",
-    title: "Product Roadmap Planning",
-    date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    duration: 62,
-    status: "complete",
-    hasTranscript: true,
-    hasUnreadInsights: true,
-    aiSummary: "5 key decisions • Timeline set • Resources allocated",
-  },
-  {
-    id: "5",
-    title: "Design Review Session",
-    date: new Date(Date.now() - 25 * 60 * 60 * 1000).toISOString(),
-    duration: 38,
-    status: "complete",
-    hasTranscript: true,
-  },
-];
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

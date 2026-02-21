@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 
 interface Props {
-  status: "idle" | "recording" | "paused" | "processing" | "complete";
+  status: "idle" | "RECORDING" | "paused" | "PROCESSING" | "COMPLETE";
   onClose: () => void;
 }
 
@@ -11,7 +11,7 @@ export default function MeetingHeader({ status, onClose }: Props) {
       <h2 className="text-2xl font-light">
         {status === "idle"
           ? "Start New Meeting"
-          : status === "complete"
+          : status === "COMPLETE"
             ? "Recording Complete"
             : "Recording in Progress"}
       </h2>

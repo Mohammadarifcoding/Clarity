@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import { Meeting } from "@/src/types/meeting";
+
 import { categorizeMeeting } from "../utils/meetingDate";
+import { Meeting } from "@prisma/client";
 
 export const useMeetingFilter = (meetings: Meeting[], searchQuery: string) => {
   const filteredMeetings = useMemo(() => {
@@ -18,7 +19,7 @@ export const useMeetingFilter = (meetings: Meeting[], searchQuery: string) => {
     } as Record<string, Meeting[]>;
 
     filteredMeetings.forEach((meeting) => {
-      const category = categorizeMeeting(meeting.date);
+      const category = categorizeMeeting(meeting.createdAt.toISOString());
       groups[category].push(meeting);
     });
 

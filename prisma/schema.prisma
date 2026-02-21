@@ -83,8 +83,6 @@ model Meeting {
   userId        String
   title         String
   note          String?       @db.Text
-  audioUrl      String?
-  audioSize     Int?
   audioDuration Int?
   status        MeetingStatus @default(RECORDING)
   startedAt     DateTime      @default(now())
@@ -137,7 +135,7 @@ model ChatMessage {
   role        MessageRole
   content     String      @db.Text
   messageType MessageType @default(TEXT)
-  tokensUsed   Int?
+  tokensUsed  Int?
   createdAt   DateTime    @default(now())
   meeting     Meeting     @relation(fields: [meetingId], references: [id], onDelete: Cascade)
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)

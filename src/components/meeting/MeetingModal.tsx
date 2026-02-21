@@ -8,12 +8,12 @@ import { formatTime } from "@/src/utils/formatTime";
 import MeetingHeader from "./MeetingHeader";
 import MeetingFooter from "./MeetingFooter";
 import useRecording from "@/src/hooks/useRecording";
-import { Meeting } from "@/src/types/meeting";
 import {
   completeMeeting,
   createMeeting,
 } from "@/src/server/modules/meeting/meeting.action";
 import toast from "react-hot-toast";
+import { Meeting } from "@prisma/client";
 
 interface MainMeetingModalProps {
   isOpen: boolean;
@@ -63,13 +63,14 @@ export default function MeetingModal({
       const newMeeting: Meeting = {
         id: meetingId,
         title: title || `Meeting - ${new Date().toLocaleString()}`,
-        duration: recordingTime,
-        status: "complete",
-        transcript: liveTranscript.join("\n"),
-        endedAt: recordingData.endedAt,
-        hasTranscript: liveTranscript.length > 0,
+        audioDuration: recordingTime,
+        status: "COMPLETE",
+        endedAt: new Date(recordingData.endedAt),
         note,
-        date: new Date().toISOString(),
+        createdAt: new Date(),
+        userId: "",
+        startedAt: new Date(recordingData.endedAt),
+        updatedAt: new Date(recordingData.endedAt),
       };
 
       onMeetingCreated?.(newMeeting);
@@ -82,7 +83,7 @@ export default function MeetingModal({
   // Close modal safely
   const handleClose = () => {
     if (
-      (recordingState === "recording" || recordingState === "paused") &&
+      (recordingState === "RECORDING" || recordingState === "paused") &&
       !window.confirm("Recording in progress... close?")
     )
       return;
@@ -139,7 +140,7 @@ export default function MeetingModal({
               />
             )}
 
-            {(recordingState === "recording" ||
+            {(recordingState === "RECORDING" ||
               recordingState === "paused") && (
               <RecordingView
                 recordingState={recordingState}
@@ -149,8 +150,8 @@ export default function MeetingModal({
               />
             )}
 
-            {(recordingState === "processing" ||
-              recordingState === "complete") && (
+            {(recordingState === "PROCESSING" ||
+              recordingState === "COMPLETE") && (
               <StatusView
                 recordingState={recordingState}
                 recordingTime={recordingTime}

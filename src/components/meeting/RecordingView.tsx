@@ -3,7 +3,7 @@ import LiveTranscript from "./recording/LiveTranscript";
 import Waveform from "./recording/Waveform";
 
 interface RecordingViewProps {
-  recordingState: "recording" | "paused";
+  recordingState: "RECORDING" | "paused";
   recordingTime: number;
   liveTranscript: string[];
   formatTime: (s: number) => string;
@@ -22,10 +22,10 @@ export const RecordingView = ({
         <div className="absolute inset-0 bg-red-500/10 rounded-full animate-pulse-glow"></div>
         <div className="absolute inset-0 flex items-center justify-center">
           <Mic
-            className={`w-12 h-12 ${recordingState === "recording" ? "text-red-500" : "text-gray-400"}`}
+            className={`w-12 h-12 ${recordingState === "RECORDING" ? "text-red-500" : "text-gray-400"}`}
           />
         </div>
-        {recordingState === "recording" && (
+        {recordingState === "RECORDING" && (
           <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse" />
         )}
       </div>
@@ -34,12 +34,12 @@ export const RecordingView = ({
         {formatTime(recordingTime)}
       </div>
       <div className="text-sm text-gray-500">
-        {recordingState === "recording" ? "Recording..." : "Paused"}
+        {recordingState === "RECORDING" ? "Recording..." : "Paused"}
       </div>
     </div>
 
     {/* Waveform */}
-    {recordingState === "recording" && <Waveform />}
+    {recordingState === "RECORDING" && <Waveform />}
 
     {/* Live Transcription */}
     <div className="flex-1 flex flex-col min-h-0">
