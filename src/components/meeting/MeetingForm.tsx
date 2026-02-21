@@ -1,15 +1,15 @@
 interface MeetingFormProps {
   title: string;
   setTitle: (val: string) => void;
-  notes: string;
-  setNotes: (val: string) => void;
+  note: string;
+  setNote: (val: string) => void;
 }
 
 export const MeetingForm = ({
   title,
   setTitle,
-  notes,
-  setNotes,
+  note,
+  setNote,
 }: MeetingFormProps) => (
   <div className="space-y-4">
     <div>
@@ -31,16 +31,16 @@ export const MeetingForm = ({
 
     <div>
       <label
-        htmlFor="notes"
+        htmlFor="note"
         className="block text-sm font-medium text-gray-700 mb-2"
       >
-        Notes <span className="text-gray-400">(Optional)</span>
+        Note <span className="text-gray-400">(Optional)</span>
       </label>
       <textarea
-        id="notes"
-        value={notes}
-        onChange={(e) => setNotes(e.target.value)}
-        placeholder="Add any notes or context about this meeting..."
+        id="note"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        placeholder="Add any note or context about this meeting..."
         rows={4}
         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-(--color-green) focus:border-transparent outline-none transition resize-none"
       />

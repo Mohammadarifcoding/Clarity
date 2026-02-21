@@ -12,6 +12,12 @@ export default function useRecording() {
   const [recordingTime, setRecordingTime] = useState(0);
   const [liveTranscript, setLiveTranscript] = useState<string[]>([]);
   const [title, setTitle] = useState("");
+  const [meetingId, setMeetingId] = useState<string | null>(null);
+
+  // Media
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
+    null,
+  );
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -22,19 +28,16 @@ export default function useRecording() {
         () => setRecordingTime((t) => t + 1),
         1000,
       );
-    } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
+    } else if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
     return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
+      if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [recordingState]);
 
+  // Mock transcript (replace with real API streaming)
   useEffect(() => {
     if (recordingState !== "recording") return;
 
@@ -45,11 +48,6 @@ export default function useRecording() {
         "Sarah, your thoughts?",
         "Allocate project resources",
         "Deadline is near",
-        "Sharing screen...",
-        "Can everyone see this?",
-        "Noting action items",
-        "Schedule follow-up",
-        "Any questions?",
       ];
       setLiveTranscript((prev) => [
         ...prev,
@@ -60,38 +58,84 @@ export default function useRecording() {
     return () => clearInterval(interval);
   }, [recordingState]);
 
-  const start = useCallback((meetingTitle?: string) => {
-    setTitle(meetingTitle || `Meeting - ${new Date().toLocaleString()}`);
-    setRecordingTime(0);
-    setLiveTranscript([]);
-    setRecordingState("recording");
-  }, []);
+  // Start recording
+  const startRecording = useCallback(
+    async (
+      meetingTitle?: string,
+      meetingId?: string,
+      onDataChunk?: (chunk: Blob) => void,
+    ) => {
+      setTitle(meetingTitle || `Meeting - ${new Date().toLocaleString()}`);
+      setMeetingId(meetingId || null);
+      setRecordingTime(0);
+      setLiveTranscript([]);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        const recorder = new MediaRecorder(stream);
+        setMediaRecorder(recorder);
 
-  const pauseResume = useCallback(() => {
-    setRecordingState((prev) =>
-      prev === "recording" ? "paused" : "recording",
-    );
-  }, []);
+        // Stream chunks on the fly
+        recorder.ondataavailable = (e) => {
+          if (e.data.size > 0 && onDataChunk) onDataChunk(e.data); // send immediately
+        };
 
-  const stop = useCallback(() => setRecordingState("processing"), []);
+        recorder.start(1000); // emit every second
+        setRecordingState("recording");
+      } catch (err) {
+        console.error("Microphone access denied or error:", err);
+      }
+    },
+    [],
+  );
 
+  // Pause/resume
+  const pauseResumeAudio = useCallback(() => {
+    if (!mediaRecorder) return;
+    if (recordingState === "recording") {
+      mediaRecorder.pause();
+      setRecordingState("paused");
+    } else if (recordingState === "paused") {
+      mediaRecorder.resume();
+      setRecordingState("recording");
+    }
+  }, [mediaRecorder, recordingState]);
+
+  // Stop recording
+  const stopRecording = useCallback(() => {
+    if (mediaRecorder) {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
+    }
+    setRecordingState("processing");
+  }, [mediaRecorder]);
+
+  // Complete
   const complete = useCallback(() => setRecordingState("complete"), []);
 
+  // Reset
   const reset = useCallback(() => {
     setRecordingState("idle");
     setRecordingTime(0);
     setLiveTranscript([]);
     setTitle("");
-  }, []);
+    setMeetingId(null);
+    if (mediaRecorder) {
+      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
+      setMediaRecorder(null);
+    }
+  }, [mediaRecorder]);
 
   return {
     recordingState,
     recordingTime,
     liveTranscript,
     title,
-    start,
-    pauseResume,
-    stop,
+    meetingId,
+    startRecording,
+    pauseResumeAudio,
+    stopRecording,
     complete,
     reset,
     setTitle,

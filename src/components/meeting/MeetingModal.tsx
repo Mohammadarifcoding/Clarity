@@ -9,6 +9,12 @@ import MeetingHeader from "./MeetingHeader";
 import MeetingFooter from "./MeetingFooter";
 import useRecording from "@/src/hooks/useRecording";
 import { Meeting } from "@/src/types/meeting";
+import {
+  completeMeeting,
+  createMeeting,
+} from "@/src/server/modules/meeting/meeting.action";
+import toast from "react-hot-toast";
+
 interface MainMeetingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -26,57 +32,87 @@ export default function MeetingModal({
     liveTranscript,
     title,
     setTitle,
-    start,
-    pauseResume,
-    stop,
+    startRecording,
+    pauseResumeAudio,
+    stopRecording,
     complete,
+    meetingId,
     reset,
   } = useRecording();
 
-  const [notes, setNotes] = useState("");
+  const [note, setNote] = useState("");
 
-  const handleStopRecording = () => {
-    stop();
+  // Stop & complete meeting
+  const handleStopRecording = async () => {
+    stopRecording(); // stop audio + timer
+    try {
+      if (!meetingId) throw new Error("No meeting ID found");
 
-    setTimeout(() => {
-      complete();
-
-      const newMeeting: Meeting = {
-        id: Date.now().toString(),
-        title: title || `Meeting - ${new Date().toLocaleString()}`,
-        date: new Date().toISOString(),
-        duration: Math.floor(recordingTime / 60),
-        status: "complete",
-        hasTranscript: true,
-        transcript: liveTranscript.join("\n"),
-        notes: notes,
+      const recordingData = {
+        meetingId,
+        audioDuration: recordingTime,
+        endedAt: new Date().toISOString(),
       };
 
-      // Final redirect/close delay
-      setTimeout(() => {
-        onMeetingCreated?.(newMeeting);
-        handleClose();
-      }, 1500);
-    }, 2000);
+      const action = await completeMeeting(recordingData);
+      if (!action.success || !action.data)
+        throw new Error("Failed to complete meeting: " + action.error);
+
+      complete(); // set state -> complete
+
+      const newMeeting: Meeting = {
+        id: meetingId,
+        title: title || `Meeting - ${new Date().toLocaleString()}`,
+        duration: recordingTime,
+        status: "complete",
+        transcript: liveTranscript.join("\n"),
+        endedAt: recordingData.endedAt,
+        hasTranscript: liveTranscript.length > 0,
+        note,
+        date: new Date().toISOString(),
+      };
+
+      onMeetingCreated?.(newMeeting);
+    } catch (err) {
+      toast.error("Failed to complete meeting: " + err);
+    }
+    handleClose();
   };
 
+  // Close modal safely
   const handleClose = () => {
     if (
       (recordingState === "recording" || recordingState === "paused") &&
       !window.confirm("Recording in progress... close?")
-    ) {
+    )
       return;
-    }
-    setNotes("");
+    setNote("");
     reset();
     onClose();
+  };
+
+  // Start meeting: create backend meeting + start recording
+  const startMeeting = async () => {
+    const data = {
+      title: title || `Meeting - ${new Date().toLocaleString()}`,
+      note,
+    };
+    try {
+      const action = await createMeeting(data);
+      if (action.success && action.data) {
+        await startRecording(title, action.data.id); // mic + timer + transcript
+      } else {
+        toast.error("Failed to create meeting: " + action.error);
+      }
+    } catch (error) {
+      toast.error("Failed to create meeting: " + error);
+    }
   };
 
   if (!isOpen) return null;
 
   return (
     <>
-      {/* Keeping the specific keyframe for the RecordingView waveform */}
       <style jsx>{`
         @keyframes waveform {
           0%,
@@ -98,8 +134,8 @@ export default function MeetingModal({
               <MeetingForm
                 title={title}
                 setTitle={setTitle}
-                notes={notes}
-                setNotes={setNotes}
+                note={note}
+                setNote={setNote}
               />
             )}
 
@@ -126,8 +162,8 @@ export default function MeetingModal({
           <MeetingFooter
             status={recordingState}
             onClose={handleClose}
-            onStart={() => start(title)}
-            onPauseResume={pauseResume}
+            onStart={startMeeting}
+            onPauseResume={pauseResumeAudio}
             onStop={handleStopRecording}
           />
         </div>

@@ -9,5 +9,6 @@ export interface Meeting {
   aiSummary?: string;
   transcript?: string;
   participants?: number;
-  notes?: string;
+  note?: string;
+  endedAt?: string; // ISO string
 }

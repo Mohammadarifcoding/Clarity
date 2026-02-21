@@ -2,18 +2,18 @@ import { Mic } from "lucide-react";
 
 interface Props {
   title: string;
-  notes: string;
+  note: string;
   setTitle: (t: string) => void;
-  setNotes: (n: string) => void;
+  setNote: (n: string) => void;
   onStart: () => void;
   onCancel: () => void;
 }
 
 export default function IdleState({
   title,
-  notes,
+  note,
   setTitle,
-  setNotes,
+  setNote,
   onStart,
   onCancel,
 }: Props) {
@@ -34,13 +34,13 @@ export default function IdleState({
 
       <div>
         <label className="block text-sm font-medium mb-2">
-          Notes <span className="text-gray-400">(Optional)</span>
+          Note <span className="text-gray-400">(Optional)</span>
         </label>
         <textarea
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
           rows={4}
-          placeholder="Add notes about this meeting..."
+          placeholder="Add note about this meeting..."
           className="w-full px-4 py-3 border rounded-xl resize-none"
         />
       </div>
