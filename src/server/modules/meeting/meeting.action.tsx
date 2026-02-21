@@ -88,6 +88,30 @@ const completeMeeting = async (
   }
 };
 
+const deleteMeeting = async (
+  meetingId: string,
+): Promise<ResponseType<null>> => {
+  try {
+    const user = await getCurrentUser();
+    const meetingExists = await prisma.meeting.findFirst({
+      where: { id: meetingId, userId: user.id },
+    });
+
+    if (!meetingExists) {
+      throw new Error("Meeting not found or access denied");
+    }
+
+    await prisma.meeting.delete({ where: { id: meetingId } });
+    return { success: true, data: null, error: null };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: error instanceof Error ? error : new Error(String(error)),
+    };
+  }
+};
+
 const listMeetings = async () => {
   try {
     const user = await getCurrentUser();
@@ -105,4 +129,4 @@ const listMeetings = async () => {
   }
 };
 
-export { createMeeting, completeMeeting, listMeetings };
+export { createMeeting, completeMeeting, listMeetings, deleteMeeting };

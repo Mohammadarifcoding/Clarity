@@ -7,6 +7,7 @@ import MeetingModal from "../../meeting/MeetingModal";
 import FAKE_MEETINGS from "@/src/data/meeting";
 import { Meeting } from "@prisma/client";
 import { useMeetings } from "@/src/hooks/useMeetingList";
+import { deleteMeeting } from "@/src/server/modules/meeting/meeting.action";
 
 // Fake data for development
 
@@ -19,7 +20,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     string | undefined
   >("2");
   const [isNewMeetingModalOpen, setIsNewMeetingModalOpen] = useState(false);
-  // const [meetings, setMeetings] = useState<Meeting[]>(FAKE_MEETINGS);
   const { meetings, loading, error, refetch } = useMeetings();
 
   const handleNewMeeting = (): void => {
@@ -31,11 +31,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     console.log("Selected meeting:", id);
   };
 
-  const handleDeleteMeeting = (id: string) => {
+  const handleDeleteMeeting = async (id: string) => {
     // setMeetings((prev) => prev.filter((m) => m.id !== id));
     // if (selectedMeetingId === id) {
     //   setSelectedMeetingId(undefined);
     // }
+    await deleteMeeting(id);
     refetch();
   };
 
