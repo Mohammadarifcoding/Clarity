@@ -129,4 +129,23 @@ const listMeetings = async () => {
   }
 };
 
-export { createMeeting, completeMeeting, listMeetings, deleteMeeting };
+const getMeetingById = async (meetingId: string) => {
+  try {
+    const user = await getCurrentUser();
+    const meeting = await prisma.meeting.findFirst({
+      where: { id: meetingId, userId: user.id },
+    });
+    return meeting;
+  } catch (error) {
+    console.error("Error fetching meeting:", error);
+    return null;
+  }
+};
+
+export {
+  createMeeting,
+  completeMeeting,
+  listMeetings,
+  deleteMeeting,
+  getMeetingById,
+};

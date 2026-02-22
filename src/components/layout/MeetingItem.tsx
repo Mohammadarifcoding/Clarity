@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Circle, Clock, MoreVertical, Trash2, Loader2 } from "lucide-react";
 
 import { formatTimeAgo, formatDuration } from "@/src/utils/meetingDate";
@@ -20,6 +21,7 @@ export default function MeetingItem({
   onSelect,
   onDelete,
 }: MeetingItemProps) {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -31,6 +33,7 @@ export default function MeetingItem({
 
   const handleSelect = () => {
     onSelect?.(meeting.id);
+    router.push(`/dashboard/${meeting.id}`);
   };
 
   const handleDelete = async (e: React.MouseEvent) => {
@@ -44,8 +47,7 @@ export default function MeetingItem({
     <div className="relative group">
       <button
         onClick={handleSelect}
-        aria-selected={isSelected}
-        className={`w-full text-left px-3 py-3 rounded-xl transition-all relative
+        className={`w-full text-left px-2.5 sm:px-3 py-2.5 sm:py-3 rounded-xl transition-all relative
           focus:outline-none focus:ring-2 focus:ring-(--color-green)/40
           ${isSelected ? "bg-(--color-green)/10" : "hover:bg-gray-50"}`}
       >
@@ -56,13 +58,13 @@ export default function MeetingItem({
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0 pr-2">
             {/* Title Row */}
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
               {meeting.status === "RECORDING" && (
-                <Circle className="w-2 h-2 text-red-500 fill-red-500 animate-pulse" />
+                <Circle className="w-1.5 h-1.5 sm:w-2 sm:h-2 text-red-500 fill-red-500 animate-pulse" />
               )}
 
               <span
-                className={`text-sm font-medium truncate ${
+                className={`text-xs sm:text-sm font-medium truncate ${
                   isSelected ? "text-(--color-green)" : "text-gray-800"
                 }`}
               >
@@ -75,13 +77,13 @@ export default function MeetingItem({
             </div>
 
             {/* Meta Row */}
-            <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1">
               <span>{formatTimeAgo(meeting.createdAt)}</span>
 
               {meeting.status === "COMPLETE" && (
                 <>
                   <span>•</span>
-                  <Clock className="w-3 h-3" />
+                  <Clock className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   <span>{formatDuration(meeting.audioDuration as number)}</span>
                 </>
               )}
@@ -92,7 +94,7 @@ export default function MeetingItem({
 
               {meeting.status === "PROCESSING" && (
                 <span className="text-blue-500 font-medium flex items-center gap-1">
-                  <Loader2 className="w-3 h-3 animate-spin" />
+                  <Loader2 className="w-2.5 h-2.5 sm:w-3 sm:h-3 animate-spin" />
                   Processing...
                 </span>
               )}
@@ -105,7 +107,7 @@ export default function MeetingItem({
       {meeting.status !== "RECORDING" && (
         <div
           ref={menuRef}
-          className="absolute right-2 top-3 opacity-0 group-hover:opacity-100 transition"
+          className="absolute right-1.5 sm:right-2 top-2.5 sm:top-3 opacity-0 group-hover:opacity-100 transition"
         >
           <button
             aria-haspopup="menu"
@@ -114,22 +116,22 @@ export default function MeetingItem({
               e.stopPropagation();
               setIsMenuOpen((prev) => !prev);
             }}
-            className="p-1.5 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-(--color-green)/40"
+            className="p-1 sm:p-1.5 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-(--color-green)/40"
           >
-            <MoreVertical className="w-4 h-4 text-gray-500" />
+            <MoreVertical className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500" />
           </button>
 
           {isMenuOpen && (
             <div
               role="menu"
-              className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded-xl shadow-lg py-1 z-20"
+              className="absolute right-0 mt-1.5 sm:mt-2 w-32 sm:w-40 bg-white border border-gray-300 rounded-xl shadow-lg py-1 z-20"
             >
               <button
                 role="menuitem"
                 onClick={handleDelete}
-                className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-xl flex items-center gap-2 "
+                className="w-full px-2.5 sm:px-3 py-1.5 sm:py-2 text-left text-xs sm:text-sm text-red-600 hover:bg-red-50 rounded-xl flex items-center gap-1.5 sm:gap-2"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 Delete
               </button>
             </div>

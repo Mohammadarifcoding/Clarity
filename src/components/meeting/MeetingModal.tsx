@@ -149,8 +149,8 @@ export default function MeetingModal({
         }
       `}</style>
 
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-175 flex flex-col animate-scale-in">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] sm:max-h-175 flex flex-col animate-scale-in">
           <MeetingHeader status={recordingState} onClose={handleClose} />
 
           <div className="flex-1 overflow-y-auto p-6 min-h-0">

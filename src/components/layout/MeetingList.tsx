@@ -41,12 +41,12 @@ export default function MeetingList({
     if (!meetings.length) return null;
 
     return (
-      <section className="mb-6">
-        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide px-3 mb-2">
+      <section className="mb-4 sm:mb-6">
+        <h3 className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wide px-2 sm:px-3 mb-1.5 sm:mb-2">
           {title}
         </h3>
 
-        <div className="space-y-1">
+        <div className="space-y-0.5 sm:space-y-1">
           {meetings.map((meeting) => (
             <MeetingItem
               key={meeting.id}
@@ -62,7 +62,7 @@ export default function MeetingList({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 scrollbar-custom">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-4 scrollbar-custom">
       {renderSection("Today", groupedMeetings.today)}
       {renderSection("Yesterday", groupedMeetings.yesterday)}
       {renderSection("This Week", groupedMeetings.thisWeek)}

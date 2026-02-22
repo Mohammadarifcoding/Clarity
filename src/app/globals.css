@@ -49,6 +49,7 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -57,6 +58,7 @@
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
+    overflow-x: hidden;
   }
 
   h1,
@@ -72,15 +74,15 @@
   }
 
   h1 {
-    @apply text-5xl lg:text-7xl;
+    @apply text-3xl lg:text-5xl xl:text-7xl;
   }
 
   h2 {
-    @apply text-4xl lg:text-5xl;
+    @apply text-2xl lg:text-4xl xl:text-5xl;
   }
 
   h3 {
-    @apply text-2xl lg:text-3xl;
+    @apply text-xl lg:text-2xl xl:text-3xl;
   }
 
   p {
@@ -91,6 +93,13 @@
   button:focus-visible,
   a:focus-visible {
     @apply outline-none ring-2 ring-[#10B981] ring-offset-2;
+  }
+
+  /* Safe area for mobile devices */
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .safe-area-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
   }
 }
 
@@ -361,3 +370,11 @@
     display: none !important;
   }
 }
+
+/* Mobile-first responsive breakpoints reference:
+   - sm: 640px (small tablets)
+   - md: 768px (tablets)
+   - lg: 1024px (laptops)
+   - xl: 1280px (desktops)
+   - 2xl: 1536px (large screens)
+*/

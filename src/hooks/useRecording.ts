@@ -182,6 +182,7 @@ export default function useRecording() {
                 input_audio_format: "pcm16",
                 input_audio_transcription: {
                   model: "whisper-1",
+                  language: "en",
                 },
                 turn_detection: {
                   type: "server_vad",
