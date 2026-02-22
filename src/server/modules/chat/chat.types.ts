@@ -11,5 +11,3 @@ export interface ChatApiResponse {
   content?: string;
   error?: string;
 }
-
-// Response wrapper type

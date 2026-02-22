@@ -46,10 +46,8 @@ export async function POST(request: NextRequest) {
     // Get chat history
     const chatHistory = await getChatHistory(meetingId);
 
-    // Build messages array using stored system prompt
     const messages: ChatCompletionMessageParam[] = [];
 
-    // Add system prompt (stored in meeting)
     if (meeting.systemPrompt) {
       messages.push({ role: "system", content: meeting.systemPrompt });
     }
@@ -63,11 +61,10 @@ export async function POST(request: NextRequest) {
     });
 
     // Add current user message
-    messages.push({ role: "user", content: message });
     console.log(messages);
 
     const response = await openaiSdk.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-5-mini",
       messages,
       max_tokens: 1000,
     });
