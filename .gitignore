@@ -38,6 +38,8 @@ yarn-error.log*
 
 .qodo
 
+data.js
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

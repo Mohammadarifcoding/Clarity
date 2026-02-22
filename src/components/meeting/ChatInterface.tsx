@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { useMessages } from "@/src/hooks/useMessages";
 import { MessageList, ChatInput } from "@/src/components/meeting/chat";
+import { Meeting } from "@prisma/client";
 
 interface ChatInterfaceProps {
   meetingId: string;
+  meeting: Meeting
 }
 
-export default function ChatInterface({ meetingId }: ChatInterfaceProps) {
+export default function ChatInterface({ meetingId, meeting }: ChatInterfaceProps) {
   const { messages, isLoading, addMessage } = useMessages(meetingId);
   const [isSending, setIsSending] = useState(false);
 
@@ -24,7 +26,7 @@ export default function ChatInterface({ meetingId }: ChatInterfaceProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, meetingId, meetingTitle: meeting.title, meetingNote: meeting.note }),
       });
 
       if (!response.ok) {

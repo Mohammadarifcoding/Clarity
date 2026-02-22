@@ -102,7 +102,7 @@ export default function MeetingChatPage({}: MeetingChatPageProps) {
 
       {/* Chat Interface - Takes remaining space */}
       <div className="flex-1 min-h-0">
-        <ChatInterface meetingId={meetingId} />
+        <ChatInterface meetingId={meetingId} meeting={meeting} />
       </div>
     </div>
   );

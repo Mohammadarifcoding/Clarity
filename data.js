@@ -7,6 +7,28 @@ const pc = new Pinecone({
     "pcsk_37etfm_9adPANiLkJCwxniuw6FwzVf8KgNSnfD5fGmtHp1u8d9f8L4j4yQkTuk2tP8ydoV",
 });
 
+const index = pc.index("clarity");
+export const searchSimilarChunks = async (meetingId, query, topK = 5) => {
+  try {
+    const namespace = index.namespace(meetingId);
+
+    const results = await namespace.searchRecords({
+      query: {
+        topK,
+        inputs: { text: query },
+      },
+    });
+    // Extract the chunk texts from the results
+    const chunks = results.result.hits.map((hit) => hit.fields.meeting_text);
+
+    return chunks;
+  } catch (error) {
+    console.error("Error searching vector database:", error);
+    return [];
+  }
+};
+
+console.log(await searchSimilarChunks("cmlxljrg00019w49sos3uga9i", "what is the main goal of this project ?"))
 // Create a dense index with integrated embedding
 // const indexName = "clarity";
 // await pc.createIndexForModel({
@@ -252,21 +274,21 @@ const pc = new Pinecone({
 // console.log(stats);
 
 // Define the query
-const query = "Famous historical structures and monuments";
+// const query = "Famous historical structures and monuments";
 
-const index = pc.index("clarity").namespace("meetingid13232");
+// const index = pc.index("clarity").namespace("meetingid13232");
 
-// Search the dense index
-const results = await index.searchRecords({
-  query: {
-    topK: 10,
-    inputs: { text: query },
-  },
-});
+// // Search the dense index
+// const results = await index.searchRecords({
+//   query: {
+//     topK: 10,
+//     inputs: { text: query },
+//   },
+// });
 
-// Print the results
-results.result.hits.forEach((hit) => {
-  console.log(
-    `id: ${hit._id}, score: ${hit._score.toFixed(2)}, text: ${hit.fields.chunk_text}`,
-  );
-});
+// // Print the results
+// results.result.hits.forEach((hit) => {
+//   console.log(
+//     `id: ${hit._id}, score: ${hit._score.toFixed(2)}, text: ${hit.fields.chunk_text}`,
+//   );
+// });

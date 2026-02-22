@@ -1,21 +1,74 @@
 import { NextRequest } from "next/server";
 import openaiSdk from "@/src/lib/openai";
+import { getChatHistory } from "@/src/server/modules/chat/chat.action";
+import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import { prisma } from "@/src/lib/db";
+import getCurrentUser from "@/src/lib/getCurrentUser";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { message } = body;
-
-    if (!message) {
-      return new Response(JSON.stringify({ error: "Message is required" }), {
-        status: 400,
+    const user = await getCurrentUser();
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
         headers: { "Content-Type": "application/json" },
       });
     }
 
+    const body = await request.json();
+    const { message, meetingId } = body;
+
+    if (!message || !meetingId) {
+      return new Response(
+        JSON.stringify({ error: "Message and meetingId are required" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    // Get meeting with stored system prompt
+    const meeting = await prisma.meeting.findFirst({
+      where: {
+        id: meetingId,
+        userId: user.id,
+      },
+    });
+
+    if (!meeting) {
+      return new Response(JSON.stringify({ error: "Meeting not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Get chat history
+    const chatHistory = await getChatHistory(meetingId);
+
+    // Build messages array using stored system prompt
+    const messages: ChatCompletionMessageParam[] = [];
+
+    // Add system prompt (stored in meeting)
+    if (meeting.systemPrompt) {
+      messages.push({ role: "system", content: meeting.systemPrompt });
+    }
+
+    // Add chat history
+    chatHistory?.forEach((msg) => {
+      messages.push({
+        role: msg.role.toLowerCase() as "user" | "assistant",
+        content: msg.content,
+      });
+    });
+
+    // Add current user message
+    messages.push({ role: "user", content: message });
+    console.log(messages);
+
     const response = await openaiSdk.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: [{ role: "user", content: message }],
+      messages,
       max_tokens: 1000,
     });
 

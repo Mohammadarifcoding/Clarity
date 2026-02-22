@@ -11,6 +11,7 @@ import {
 import { prisma } from "@/src/lib/db";
 import { Meeting } from "@prisma/client";
 import getCurrentUser from "@/src/lib/getCurrentUser";
+import { buildSystemPrompt } from "../chat/chat.prompts";
 
 type ResponseType<T> = {
   success: boolean;

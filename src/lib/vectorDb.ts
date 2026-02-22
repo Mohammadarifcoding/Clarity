@@ -25,7 +25,7 @@ export const searchSimilarChunks = async (
 
     // Extract the chunk texts from the results
     const chunks = results.result.hits.map(
-      (hit) => hit.fields.chunk_text as string,
+      (hit) => (hit.fields as Record<string, string>).meeting_text,
     );
 
     return chunks;
@@ -34,5 +34,6 @@ export const searchSimilarChunks = async (
     return [];
   }
 };
+
 
 export { index as vectorDb };

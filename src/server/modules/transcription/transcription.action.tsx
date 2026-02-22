@@ -3,6 +3,7 @@
 import { prisma } from "@/src/lib/db";
 import getCurrentUser from "@/src/lib/getCurrentUser";
 import { vectorDb } from "@/src/lib/vectorDb";
+import { buildSystemPrompt } from "../chat/chat.prompts";
 
 type ResponseType<T> = {
   success: boolean;
@@ -91,31 +92,31 @@ const saveTranscript = async (
       return transcript;
     });
 
-    if (body.segments?.length) {
-      try {
-        const db = vectorDb.namespace(body.meetingId);
+    // if (body.segments?.length) {
+    //   try {
+    //     const db = vectorDb.namespace(body.meetingId);
 
-        await db.upsertRecords({
-          records: body.segments.map((segment, index) => ({
-            id: `${result.id}-${index}`,
-            meeting_text: segment.text,
-            start_time: segment.startTime,
-            end_time: segment.endTime,
-            sequence_number: segment.sequenceNumber ?? index,
-          })),
-        });
-      } catch (error) {
-        // Manual rollback if vector DB fails
-        await prisma.transcript.delete({
-          where: { id: result.id },
-        });
+    //     await db.upsertRecords({
+    //       records: body.segments.map((segment, index) => ({
+    //         id: `${result.id}-${index}`,
+    //         meeting_text: segment.text,
+    //         start_time: segment.startTime,
+    //         end_time: segment.endTime,
+    //         sequence_number: segment.sequenceNumber ?? index,
+    //       })),
+    //     });
+    //   } catch (error) {
+    //     // Manual rollback if vector DB fails
+    //     await prisma.transcript.delete({
+    //       where: { id: result.id },
+    //     });
 
-        throw new Error(
-          "Vector DB failed. Rolled back DB changes. " +
-            (error instanceof Error ? error.message : String(error)),
-        );
-      }
-    }
+    //     throw new Error(
+    //       "Vector DB failed. Rolled back DB changes. " +
+    //         (error instanceof Error ? error.message : String(error)),
+    //     );
+    //   }
+    // }
 
     return {
       success: true,
@@ -194,4 +195,77 @@ const deleteTranscript = async (meetingId: string) => {
   }
 };
 
-export { saveTranscript, getTranscript, deleteTranscript };
+// Build and update system prompt for a meeting
+const updateMeetingSystemPrompt = async (
+  meetingId: string,
+): Promise<
+  ResponseType<{ meetingId: string; systemPrompt: string | null }>
+> => {
+  try {
+    const user = await getCurrentUser();
+
+    const meeting = await prisma.meeting.findFirst({
+      where: { id: meetingId, userId: user.id },
+      include: {
+        transcript: {
+          include: {
+            transcriptSegments: {
+              orderBy: { sequenceNumber: "asc" },
+            },
+          },
+        },
+      },
+    });
+
+    if (!meeting) {
+      throw new Error("Meeting not found or access denied");
+    }
+
+    let systemPrompt: string | null = null;
+
+    if (
+      meeting.transcript &&
+      meeting.transcript.transcriptSegments.length > 0
+    ) {
+      const transcriptSegments = meeting.transcript.transcriptSegments.map(
+        (segment) => ({
+          text: segment.text,
+          startTime: segment.startTime,
+          endTime: segment.endTime,
+        }),
+      );
+
+      systemPrompt = buildSystemPrompt(
+        meeting.title,
+        meeting.note,
+        transcriptSegments,
+      );
+    }
+
+    const updatedMeeting = await prisma.meeting.update({
+      where: { id: meetingId },
+      data: {
+        systemPrompt,
+      },
+    });
+
+    return {
+      success: true,
+      data: { meetingId: updatedMeeting.id, systemPrompt },
+      error: null,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: error instanceof Error ? error : new Error(String(error)),
+    };
+  }
+};
+
+export {
+  saveTranscript,
+  getTranscript,
+  deleteTranscript,
+  updateMeetingSystemPrompt,
+};
