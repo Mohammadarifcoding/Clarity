@@ -2,13 +2,8 @@
 
 import { prisma } from "@/src/lib/db";
 import getCurrentUser from "@/src/lib/getCurrentUser";
+import { ResponseType } from "@/src/types/response";
 import { ChatMessage } from "@prisma/client";
-
-type ResponseType<T> = {
-  success: boolean;
-  data: T | null;
-  error: Error | null;
-};
 
 // Save a message to the database
 const saveMessage = async (
@@ -63,11 +58,15 @@ const getChatHistory = async (
   meetingId: string,
   limit: number = 50,
   offset: number = 0,
-): Promise<ChatMessage[] | null> => {
+): Promise<ResponseType<ChatMessage[] | null>> => {
   try {
     const user = await getCurrentUser();
     if (!user) {
-      return null;
+      return {
+        success: false,
+        data: null,
+        error: "user not found",
+      };
     }
 
     // Verify meeting exists and belongs to user
@@ -79,7 +78,11 @@ const getChatHistory = async (
     });
 
     if (!meeting) {
-      return null;
+      return {
+        success: false,
+        data: null,
+        error: "meeting not found",
+      };
     }
 
     const messages = await prisma.chatMessage.findMany({
@@ -93,10 +96,18 @@ const getChatHistory = async (
       skip: offset,
     });
 
-    return messages;
+    return {
+      success: true,
+      data: messages,
+      error: null,
+    };
   } catch (error) {
     console.error("Error fetching chat history:", error);
-    return null;
+    return {
+      success: false,
+      data: null,
+      error: error instanceof Error ? error : new Error(String(error)),
+    };
   }
 };
 

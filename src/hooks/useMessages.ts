@@ -32,9 +32,9 @@ export function useMessages(meetingId: string): UseMessagesReturn {
 
     try {
       const history = await getChatHistory(meetingId);
-      if (history) {
+      if (history.data) {
         setMessages(
-          history.map((msg) => ({
+          history.data.map((msg) => ({
             id: msg.id,
             content: msg.content,
             role: msg.role as "USER" | "ASSISTANT",

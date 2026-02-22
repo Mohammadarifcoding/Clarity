@@ -11,13 +11,7 @@ import {
 import { prisma } from "@/src/lib/db";
 import { Meeting } from "@prisma/client";
 import getCurrentUser from "@/src/lib/getCurrentUser";
-import { buildSystemPrompt } from "../chat/chat.prompts";
-
-type ResponseType<T> = {
-  success: boolean;
-  data: T | null;
-  error: Error | null;
-};
+import { ResponseType } from "@/src/types/response";
 
 const createMeeting = async (
   body: CreateMeetingInput,
@@ -130,16 +124,26 @@ const listMeetings = async () => {
   }
 };
 
-const getMeetingById = async (meetingId: string) => {
+const getMeetingById = async (
+  meetingId: string,
+): Promise<ResponseType<Meeting>> => {
   try {
     const user = await getCurrentUser();
     const meeting = await prisma.meeting.findFirst({
       where: { id: meetingId, userId: user.id },
     });
-    return meeting;
+    return {
+      success: true,
+      data: meeting,
+      error: null,
+    };
   } catch (error) {
     console.error("Error fetching meeting:", error);
-    return null;
+    return {
+      success: false,
+      data: null,
+      error: error instanceof Error ? error : new Error(String(error)),
+    };
   }
 };
 

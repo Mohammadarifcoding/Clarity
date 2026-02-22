@@ -24,11 +24,11 @@ export default function MeetingChatPage({}: MeetingChatPageProps) {
     const fetchMeeting = async () => {
       try {
         const data = await getMeetingById(meetingId);
-        if (!data) {
+        if (!data.data) {
           setError("Meeting not found");
           return;
         }
-        setMeeting(data);
+        setMeeting(data.data);
       } catch (err) {
         setError("Failed to load meeting");
         console.error(err);

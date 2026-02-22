@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Add chat history
-    chatHistory?.forEach((msg) => {
+    chatHistory.data?.forEach((msg) => {
       messages.push({
         role: msg.role.toLowerCase() as "user" | "assistant",
         content: msg.content,

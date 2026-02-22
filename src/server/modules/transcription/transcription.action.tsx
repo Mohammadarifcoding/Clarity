@@ -2,14 +2,8 @@
 
 import { prisma } from "@/src/lib/db";
 import getCurrentUser from "@/src/lib/getCurrentUser";
-import { vectorDb } from "@/src/lib/vectorDb";
 import { buildSystemPrompt } from "../chat/chat.prompts";
-
-type ResponseType<T> = {
-  success: boolean;
-  data: T | null;
-  error: Error | null;
-};
+import { ResponseType } from "@/src/types/response";
 
 interface TranscriptSegmentInput {
   text: string;
