@@ -81,7 +81,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-hidden">
+      <main className="flex-1 flex flex-col">
         {/* Mobile Header Only show on dashboard home */}
         {!selectedMeetingId && (
           <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center gap-3">
@@ -100,7 +100,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </button>
           </div>
         )}
-        <div className="h-full overflow-y-auto">{children}</div>
+        <div className="flex-1 overflow-y-auto">{children}</div>
       </main>
 
       {/* Meeting Modal */}

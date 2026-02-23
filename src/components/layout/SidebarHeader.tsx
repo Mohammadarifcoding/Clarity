@@ -12,7 +12,7 @@ const SidebarHeader = ({
 }) => {
   return (
     <div className="">
-      <div className="text-lg font-medium text-(--color-charcoal) flex gap-2 items-center px-3 sm:px-5 py-3 border-b border-gray-200">
+      <div className="text-lg font-medium text-(--color-charcoal) lg:flex hidden gap-2 items-center px-3 sm:px-5 py-3 border-b border-gray-200">
         <div className="w-7 h-7 bg-(--color-green) rounded-2xl flex items-center justify-center ">
           <div className="w-3 h-3 bg-white rounded-full"></div>
         </div>

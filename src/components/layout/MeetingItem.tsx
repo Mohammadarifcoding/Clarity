@@ -48,7 +48,7 @@ export default function MeetingItem({
       <button
         onClick={handleSelect}
         className={`w-full text-left px-2.5 sm:px-3 py-2.5 sm:py-3 rounded-xl transition-all relative
-          focus:outline-none focus:ring-2 focus:ring-(--color-green)/40
+          focus:outline-none focus:ring focus:ring-(--color-green)/40
           ${isSelected ? "bg-(--color-green)/10" : "hover:bg-gray-50"}`}
       >
         {/* {meeting.hasUnreadInsights && (

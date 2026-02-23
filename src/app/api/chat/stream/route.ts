@@ -64,9 +64,9 @@ export async function POST(request: NextRequest) {
     console.log(messages);
 
     const response = await openaiSdk.chat.completions.create({
-      model: "gpt-5-mini",
+      model: "gpt-4o-mini",
       messages,
-      max_tokens: 1000,
+      // max_tokens: 1000,
     });
 
     const content =

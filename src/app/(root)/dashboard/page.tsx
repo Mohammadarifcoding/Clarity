@@ -5,7 +5,7 @@ import { MessageSquare, Mic, FileText, Sparkles } from "lucide-react";
 
 export default function DashboardPage() {
   return (
-    <div className="lg:py-4 mt-6 mb-14 h-full flex items-center justify-center p-4 sm:p-8">
+    <div className="min-h-full flex items-center justify-center px-4 py-12 sm:py-20">
       <div className="max-w-2xl w-full text-center">
         {/* Icon */}
         <div className="w-14 h-14 sm:w-20 sm:h-20 bg-(--color-green)/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">

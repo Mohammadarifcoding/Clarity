@@ -67,7 +67,7 @@ export default function MeetingChatPage({}: MeetingChatPageProps) {
   return (
     <div className="h-full flex flex-col">
       {/* Fixed Header */}
-      <div className="shrink-0 border-b border-gray-200 bg-white px-3 sm:px-6 py-3 sm:py-4">
+      <div className="shrink-0 border-b border-gray-200 bg-white px-3 sm:px-6 py-2 sm:py-[5px]">
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Mobile menu button - visible only on mobile */}
           <button
@@ -86,10 +86,10 @@ export default function MeetingChatPage({}: MeetingChatPageProps) {
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
           <div className="min-w-0 flex-1">
-            <h1 className="text-base sm:text-lg md:text-xl font-medium text-(--color-charcoal) truncate">
+            <h1 className="text-base sm:text-sm md:text-lg font-medium text-(--color-charcoal) truncate">
               {meeting.title}
             </h1>
-            <p className="text-xs sm:text-sm text-gray-500">
+            <p className="text-[10px] sm:text-xs text-gray-500">
               {new Date(meeting.createdAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
