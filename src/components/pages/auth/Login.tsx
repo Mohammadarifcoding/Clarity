@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, Lock, Chrome } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "@/src/lib/auth-client";
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ export default function LoginForm() {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+    const redirect = searchParams.get("redirect") || "/";
     try {
       await signIn.email(
         {
@@ -26,7 +27,7 @@ export default function LoginForm() {
         },
         {
           onSuccess: () => {
-            router.push("/dashboard");
+            router.replace(redirect);
           },
           onError: (ctx) => {
             setError(ctx.error.message || "Login failed");

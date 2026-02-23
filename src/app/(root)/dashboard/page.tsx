@@ -5,7 +5,7 @@ import { MessageSquare, Mic, FileText, Sparkles } from "lucide-react";
 
 export default function DashboardPage() {
   return (
-    <div className="h-full flex items-center justify-center p-4 sm:p-8">
+    <div className="lg:py-4 mt-6 mb-14 h-full flex items-center justify-center p-4 sm:p-8">
       <div className="max-w-2xl w-full text-center">
         {/* Icon */}
         <div className="w-14 h-14 sm:w-20 sm:h-20 bg-(--color-green)/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
@@ -61,7 +61,7 @@ export default function DashboardPage() {
         {/* Quick Tips */}
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 sm:p-6 text-left">
           <h3 className="font-medium text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-2">
-            <span className="text-blue-600">💡</span>
+            {/* <span className="text-blue-600">💡</span> */}
             Quick Tips
           </h3>
           <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600">

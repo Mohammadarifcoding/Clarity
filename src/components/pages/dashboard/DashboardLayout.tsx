@@ -9,6 +9,7 @@ import MeetingModal from "../../meeting/MeetingModal";
 import { Meeting } from "@prisma/client";
 import { useMeetings } from "@/src/hooks/useMeetingList";
 import { deleteMeeting } from "@/src/server/modules/meeting/meeting.action";
+import Logo from "../../shared/logo";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -83,7 +84,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <main className="flex-1 overflow-hidden">
         {/* Mobile Header Only show on dashboard home */}
         {!selectedMeetingId && (
-          <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3">
+          <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center gap-3">
+            <div className="text-lg font-medium text-(--color-charcoal) flex gap-2 items-center">
+              <div className="w-7 h-7 bg-(--color-green) rounded-2xl flex items-center justify-center ">
+                <div className="w-3 h-3 bg-white rounded-full"></div>
+              </div>
+              Clarity
+            </div>
             <button
               onClick={toggleSidebar}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -91,9 +98,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               <Menu className="w-6 h-6 text-gray-600" />
             </button>
-            <h1 className="text-lg font-medium text-(--color-charcoal)">
-              Clarity
-            </h1>
           </div>
         )}
         <div className="h-full overflow-y-auto">{children}</div>

@@ -1,8 +1,18 @@
 import LoginForm from "@/src/components/pages/auth/Login";
+import { Suspense } from "react";
 export default function LoginPage() {
   return (
     <div className="min-h-screen bg-white flex">
-      <LoginForm />
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex-1 items-center justify-center">
+            Loading...
+          </div>
+        }
+      >
+        <LoginForm />
+      </Suspense>
+
       {/* Right Side - Visual */}
       <div className="hidden lg:flex flex-1 bg-gradient-to-br from-[var(--color-charcoal)] to-[var(--color-charcoal-light)] relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-radial opacity-30"></div>

@@ -4,12 +4,13 @@ import React, { useState } from "react";
 import { Mail, Lock, EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signUp } from "@/src/lib/auth-client";
 
 export default function RegisterForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const searchParams = useSearchParams();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,7 +35,7 @@ export default function RegisterForm() {
       setLoading(false);
       return;
     }
-
+    const redirect = searchParams.get("redirect") || "/";
     try {
       await signUp.email(
         {
@@ -44,7 +45,7 @@ export default function RegisterForm() {
         },
         {
           onSuccess: () => {
-            router.push("/dashboard");
+            router.replace(redirect);
           },
           onError: (ctx) => {
             setError(ctx.error.message || "Registration failed");

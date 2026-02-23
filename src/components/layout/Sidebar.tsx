@@ -44,9 +44,12 @@ export default function Sidebar({
       >
         {/* Mobile Close Button */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 lg:hidden">
-          <h2 className="text-lg font-medium text-(--color-charcoal)">
+          <div className="text-lg font-medium text-(--color-charcoal) flex gap-2 items-center">
+            <div className="w-7 h-7 bg-(--color-green) rounded-2xl flex items-center justify-center ">
+              <div className="w-3 h-3 bg-white rounded-full"></div>
+            </div>
             Clarity
-          </h2>
+          </div>
           <button
             onClick={onCloseMobile}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Logo from "@/src/components/shared/logo";
 import RegisterForm from "@/src/components/pages/auth/Register";
+import { Suspense } from "react";
 
 export default function Register() {
   return (
@@ -69,7 +70,15 @@ export default function Register() {
       </div>
 
       {/* Right Side - Form */}
-      <RegisterForm />
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex-1 items-center justify-center">
+            Loading...
+          </div>
+        }
+      >
+        <RegisterForm />
+      </Suspense>
     </div>
   );
 }

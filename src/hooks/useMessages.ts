@@ -63,7 +63,6 @@ export function useMessages(meetingId: string): UseMessagesReturn {
       content: string,
       role: "USER" | "ASSISTANT",
     ): Promise<Message | null> => {
-      // Optimistic update - add to local state immediately
       const tempMessage: Message = {
         id: `temp-${Date.now()}`,
         content,
