@@ -59,9 +59,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Tips */}
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 sm:p-6 text-left">
+        {/* <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 sm:p-6 text-left">
           <h3 className="font-medium text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-2">
-            {/* <span className="text-blue-600">💡</span> */}
             Quick Tips
           </h3>
           <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600">
@@ -81,7 +80,7 @@ export default function DashboardPage() {
               <span>Use voice or text to interact with the AI</span>
             </li>
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   );

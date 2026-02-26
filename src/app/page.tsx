@@ -13,7 +13,7 @@ export default function ClarityHomepage() {
       <Features />
 
       {/* FAQ Section */}
-      <Faq />
+      {/* <Faq /> */}
 
       {/* CTA Section */}
       <Cta />
