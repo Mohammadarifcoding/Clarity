@@ -21,9 +21,8 @@ Users can start recording meetings immediately with a single interaction. Integr
 
 AI-driven transcription provides up to industry-standard accuracy across multiple languages and accents, enabling reliable text output. 
 
-### Query and Search
-
-Clarity’s query interface allows users to retrieve details from transcripts by asking clear, natural language questions. Users can also search across previously recorded meetings to find relevant discussions. 
+### Group Call
+Ai driven system for group calling feature between multiple people and user . also Ai bot can join
 
 ### Security and Privacy
 
