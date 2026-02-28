@@ -14,7 +14,7 @@ import {
 } from "@/src/server/modules/meeting/meeting.action";
 import {
   saveTranscript,
-  updateMeetingSystemPrompt,
+  updateMeetingSummary,
 } from "@/src/server/modules/transcription/transcription.action";
 import toast from "react-hot-toast";
 import { Meeting } from "@prisma/client";
@@ -84,7 +84,7 @@ export default function MeetingModal({
           toast.error("Meeting saved but transcript failed to save");
         }
       }
-      await updateMeetingSystemPrompt(meetingId);
+      updateMeetingSummary(meetingId);
       complete();
 
       const newMeeting: Meeting = {
@@ -99,6 +99,7 @@ export default function MeetingModal({
         startedAt: new Date(recordingData.endedAt),
         updatedAt: new Date(recordingData.endedAt),
         systemPrompt: null,
+        aiSummary: null,
       };
 
       onMeetingCreated?.(newMeeting);

@@ -4,6 +4,7 @@ import { getChatHistory } from "@/src/server/modules/chat/chat.action";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { prisma } from "@/src/lib/db";
 import getCurrentUser from "@/src/lib/getCurrentUser";
+import { buildSystemPrompt } from "@/src/server/modules/chat/chat.prompts";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,9 +17,9 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { message, meetingId } = body;
+    const { meetingId } = body;
 
-    if (!message || !meetingId) {
+    if (!meetingId) {
       return new Response(
         JSON.stringify({ error: "Message and meetingId are required" }),
         {
@@ -48,8 +49,15 @@ export async function POST(request: NextRequest) {
 
     const messages: ChatCompletionMessageParam[] = [];
 
-    if (meeting.systemPrompt) {
-      messages.push({ role: "system", content: meeting.systemPrompt });
+    if (meeting.aiSummary) {
+      messages.push({
+        role: "system",
+        content: buildSystemPrompt(
+          meeting.title,
+          meeting.note,
+          meeting.aiSummary,
+        ),
+      });
     }
 
     // Add chat history
@@ -64,7 +72,7 @@ export async function POST(request: NextRequest) {
     console.log(messages);
 
     const response = await openaiSdk.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       messages,
       // max_tokens: 1000,
     });

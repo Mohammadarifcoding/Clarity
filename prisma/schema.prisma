@@ -84,6 +84,7 @@ model Meeting {
   title         String
   note          String?       @db.Text
   systemPrompt  String?       @db.Text
+  aiSummary     String?       @db.Text
   audioDuration Int?
   status        MeetingStatus @default(RECORDING)
   startedAt     DateTime      @default(now())

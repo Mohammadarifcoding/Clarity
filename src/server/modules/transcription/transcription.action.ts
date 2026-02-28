@@ -4,6 +4,9 @@ import { prisma } from "@/src/lib/db";
 import getCurrentUser from "@/src/lib/getCurrentUser";
 import { buildSystemPrompt } from "../chat/chat.prompts";
 import { ResponseType } from "@/src/types/response";
+import { vectorDb } from "@/src/lib/vectorDb";
+import openaiSdk from "@/src/lib/openai";
+import { Ai_Summary_prompt } from "@/src/utils/prompt";
 
 interface TranscriptSegmentInput {
   text: string;
@@ -86,31 +89,31 @@ const saveTranscript = async (
       return transcript;
     });
 
-    // if (body.segments?.length) {
-    //   try {
-    //     const db = vectorDb.namespace(body.meetingId);
+    if (body.segments?.length) {
+      try {
+        const db = vectorDb.namespace(body.meetingId);
 
-    //     await db.upsertRecords({
-    //       records: body.segments.map((segment, index) => ({
-    //         id: `${result.id}-${index}`,
-    //         meeting_text: segment.text,
-    //         start_time: segment.startTime,
-    //         end_time: segment.endTime,
-    //         sequence_number: segment.sequenceNumber ?? index,
-    //       })),
-    //     });
-    //   } catch (error) {
-    //     // Manual rollback if vector DB fails
-    //     await prisma.transcript.delete({
-    //       where: { id: result.id },
-    //     });
+        db.upsertRecords({
+          records: body.segments.map((segment, index) => ({
+            id: `${result.id}-${index}`,
+            meeting_text: segment.text,
+            start_time: segment.startTime,
+            end_time: segment.endTime,
+            sequence_number: segment.sequenceNumber ?? index,
+          })),
+        });
+      } catch (error) {
+        // Manual rollback if vector DB fails
+        await prisma.transcript.delete({
+          where: { id: result.id },
+        });
 
-    //     throw new Error(
-    //       "Vector DB failed. Rolled back DB changes. " +
-    //         (error instanceof Error ? error.message : String(error)),
-    //     );
-    //   }
-    // }
+        throw new Error(
+          "Vector DB failed. Rolled back DB changes. " +
+            (error instanceof Error ? error.message : String(error)),
+        );
+      }
+    }
 
     return {
       success: true,
@@ -190,21 +193,27 @@ const deleteTranscript = async (meetingId: string) => {
 };
 
 // Build and update system prompt for a meeting
-const updateMeetingSystemPrompt = async (
+const updateMeetingSummary = async (
   meetingId: string,
-): Promise<
-  ResponseType<{ meetingId: string; systemPrompt: string | null }>
-> => {
+): Promise<ResponseType<{ meetingId: string; aiSummary: string | null }>> => {
   try {
     const user = await getCurrentUser();
 
     const meeting = await prisma.meeting.findFirst({
-      where: { id: meetingId, userId: user.id },
+      where: {
+        id: meetingId,
+        userId: user.id,
+      },
       include: {
         transcript: {
           include: {
             transcriptSegments: {
               orderBy: { sequenceNumber: "asc" },
+              select: {
+                text: true,
+                startTime: true,
+                endTime: true,
+              },
             },
           },
         },
@@ -215,37 +224,59 @@ const updateMeetingSystemPrompt = async (
       throw new Error("Meeting not found or access denied");
     }
 
-    let systemPrompt: string | null = null;
+    let aiSummary: string | null = null;
 
-    if (
-      meeting.transcript &&
-      meeting.transcript.transcriptSegments.length > 0
-    ) {
-      const transcriptSegments = meeting.transcript.transcriptSegments.map(
-        (segment) => ({
-          text: segment.text,
-          startTime: segment.startTime,
-          endTime: segment.endTime,
+    const segments = meeting.transcript?.transcriptSegments ?? [];
+
+    if (segments.length > 0) {
+      const payload = {
+        title: meeting.title,
+        note: meeting.note,
+        transcripts: segments.map((s) => {
+          return {
+            text: s.text,
+            startTime: s.startTime,
+            endTime: s.endTime,
+          };
         }),
-      );
+      };
 
-      systemPrompt = buildSystemPrompt(
-        meeting.title,
-        meeting.note,
-        transcriptSegments,
-      );
+      const response = await openaiSdk.responses.create({
+        model: "gpt-4o-mini",
+        instructions: Ai_Summary_prompt,
+        input: JSON.stringify(payload),
+      });
+
+      const raw = response.output_text;
+
+      if (!raw) {
+        throw new Error("Empty AI response");
+      }
+
+      let parsed: { status: "success" | "failed"; data: string | null };
+
+      try {
+        parsed = JSON.parse(raw);
+      } catch {
+        throw new Error("Invalid JSON from AI");
+      }
+
+      if (parsed.status === "success") {
+        aiSummary = parsed.data;
+      }
     }
 
     const updatedMeeting = await prisma.meeting.update({
       where: { id: meetingId },
-      data: {
-        systemPrompt,
-      },
+      data: { aiSummary },
     });
 
     return {
       success: true,
-      data: { meetingId: updatedMeeting.id, systemPrompt },
+      data: {
+        meetingId: updatedMeeting.id,
+        aiSummary: updatedMeeting.aiSummary,
+      },
       error: null,
     };
   } catch (error) {
@@ -256,10 +287,9 @@ const updateMeetingSystemPrompt = async (
     };
   }
 };
-
 export {
   saveTranscript,
   getTranscript,
   deleteTranscript,
-  updateMeetingSystemPrompt,
+  updateMeetingSummary,
 };
