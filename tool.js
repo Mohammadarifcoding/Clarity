@@ -124,6 +124,7 @@ async function getResponse(filenames, changes) {
     model: "gpt-4o-mini",
     tools: tools,
     input: messages,
+    tool_choice: "required",
     max_output_tokens: 1024,
   });
 

@@ -1,10 +1,13 @@
 import { NextRequest } from "next/server";
 import openaiSdk from "@/src/lib/openai";
 import { getChatHistory } from "@/src/server/modules/chat/chat.action";
-import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 import { prisma } from "@/src/lib/db";
 import getCurrentUser from "@/src/lib/getCurrentUser";
 import { buildSystemPrompt } from "@/src/server/modules/chat/chat.prompts";
+import {
+  executeTool,
+  searchMeetingTool,
+} from "@/src/server/modules/chat/chat.tools";
 
 export async function POST(request: NextRequest) {
   try {
@@ -46,9 +49,7 @@ export async function POST(request: NextRequest) {
 
     // Get chat history
     const chatHistory = await getChatHistory(meetingId);
-
-    const messages: ChatCompletionMessageParam[] = [];
-
+    const messages: any[] = [];
     if (meeting.aiSummary) {
       messages.push({
         role: "system",
@@ -60,25 +61,65 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Add chat history
     chatHistory.data?.forEach((msg) => {
       messages.push({
-        role: msg.role.toLowerCase() as "user" | "assistant",
+        role: msg.role.toLowerCase(),
         content: msg.content,
       });
     });
 
-    // Add current user message
-    console.log(messages);
-
-    const response = await openaiSdk.chat.completions.create({
+ 
+    let response = await openaiSdk.responses.create({
       model: "gpt-4o",
-      messages,
-      // max_tokens: 1000,
+      input: messages,
+      tools: [searchMeetingTool],
+      tool_choice: "required",
     });
+    const updatedMessages = [...messages];
+    response.output.forEach((item) => {
+      updatedMessages.push(item);
+    });
+   
+    const toolOutputs = [];
+    for (const item of response.output) {
+      if (item.type === "function_call") {
+        const data = await executeTool(
+          item.name,
+          JSON.parse(item.arguments),
+          meetingId,
+        );
 
-    const content =
-      response.choices[0]?.message?.content || "No response generated.";
+        toolOutputs.push({
+          type: "function_call_output",
+          call_id: item.call_id,
+          output: JSON.stringify(data),
+        });
+      }
+    }
+
+
+    if (toolOutputs.length > 0) {
+      response = await openaiSdk.responses.create({
+        model: "gpt-4o",
+        input: [...updatedMessages, ...toolOutputs],
+      });
+
+      // Extract text from finalResponse
+      const assistantStep = response.output.find((o) => o.type === "message");
+      const textContent = assistantStep?.content?.find(
+        (c) => c.type === "output_text",
+      )?.text;
+
+      return new Response(
+        JSON.stringify({ content: textContent || "No response generated." }),
+      );
+    }
+
+    
+    const textItem = response.output
+      .find((o) => o.type === "message")
+      ?.content?.find((c) => c.type === "output_text");
+    const content = textItem?.text || "No response generated.";
 
     return new Response(JSON.stringify({ content }), {
       status: 200,
@@ -88,7 +129,6 @@ export async function POST(request: NextRequest) {
     console.error("API error:", error);
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
     });
   }
 }

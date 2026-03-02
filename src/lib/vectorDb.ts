@@ -7,12 +7,18 @@ const pc = new Pinecone({
 
 const index = pc.index("clarity");
 
+type MeetingChunk = {
+  meeting_text: string;
+  start_time: number;
+  end_time: number;
+};
+
 // Search similar chunks in the vector database for a specific meeting
 export const searchSimilarChunks = async (
   meetingId: string,
   query: string,
   topK: number = 5,
-): Promise<string[]> => {
+): Promise<MeetingChunk[]> => {
   try {
     const namespace = index.namespace(meetingId);
 
@@ -23,10 +29,11 @@ export const searchSimilarChunks = async (
       },
     });
 
-    // Extract the chunk texts from the results
-    const chunks = results.result.hits.map(
-      (hit) => (hit.fields as Record<string, string>).meeting_text,
-    );
+    const chunks = results.result.hits.map((hit) => ({
+      meeting_text: (hit.fields as Record<string, string>).meeting_text,
+      start_time: (hit.fields as Record<string, number>).start_time,
+      end_time: (hit.fields as Record<string, number>).end_time,
+    }));
 
     return chunks;
   } catch (error) {
@@ -34,6 +41,5 @@ export const searchSimilarChunks = async (
     return [];
   }
 };
-
 
 export { index as vectorDb };
